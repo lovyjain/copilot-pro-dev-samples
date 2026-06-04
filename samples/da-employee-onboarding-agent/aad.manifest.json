@@ -1,0 +1,41 @@
+{
+    "id": "${{AAD_APP_OBJECT_ID}}",
+    "appId": "${{AAD_APP_CLIENT_ID}}",
+    "displayName": "da-employee-onboarding-agent-aad",
+    "signInAudience": "AzureADMultipleOrgs",
+    "api": {
+        "requestedAccessTokenVersion": 2
+    },
+    "info": {},
+    "publicClient": {},
+    "requiredResourceAccess": [
+        {
+            "resourceAppId": "Microsoft Graph",
+            "resourceAccess": [
+                {
+                    "id": "204e0828-b5ca-4ad8-b9f3-f32a958e7cc4",
+                    "type": "Scope"
+                },
+                {
+                    "id": "4e46008b-f24c-477d-8fff-7bb4ec7aafe0",
+                    "type": "Scope"
+                },
+                {
+                    "id": "2219042f-cab5-40cc-b0d2-16b1540b4c5f",
+                    "type": "Scope"
+                },
+                {
+                    "id": "e383f46a-1c5f-4736-8723-a0c0-90a7dfdb5b22",
+                    "type": "Scope"
+                }
+            ]
+        }
+    ],
+    "web": {
+        "redirectUris": [
+            "https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect"
+        ],
+        "implicitGrantSettings": {}
+    },
+    "spa": {}
+}

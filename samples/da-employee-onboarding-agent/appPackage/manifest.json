@@ -1,0 +1,31 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
+    "manifestVersion": "1.19",
+    "version": "1.0.0",
+    "id": "${{TEAMS_APP_ID}}",
+    "developer": {
+        "name": "My App, Inc.",
+        "websiteUrl": "https://www.example.com",
+        "privacyUrl": "https://www.example.com/privacy",
+        "termsOfUseUrl": "https://www.example.com/termofuse"
+    },
+    "icons": {
+        "color": "color.png",
+        "outline": "outline.png"
+    },
+    "name": {
+        "short": "daemployeeonboarding${{APP_NAME_SUFFIX}}",
+        "full": "Employee Onboarding Buddy"
+    },
+    "description": {
+        "short": "Automate employee onboarding and offboarding workflows",
+        "full": "A declarative agent that orchestrates the full employee onboarding lifecycle via Microsoft Graph — creates Entra ID accounts, assigns Microsoft 365 licenses, manages group memberships, builds Planner onboarding task boards, and sends personalised welcome emails."
+    },
+    "accentColor": "#0078D4",
+    "composeExtensions": [],
+    "permissions": [
+        "identity",
+        "messageTeamMembers"
+    ],
+    "validDomains": []
+}

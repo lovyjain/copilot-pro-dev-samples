@@ -1,0 +1,57 @@
+[
+  {
+    "name": "pnp-copilot-pro-dev-da-employee-onboarding-agent",
+    "source": "pnp",
+    "title": "Employee Onboarding Buddy using TypeSpec for Microsoft 365 Copilot",
+    "shortDescription": "A declarative agent that orchestrates the full employee onboarding and offboarding lifecycle via Microsoft Graph — creating accounts, assigning licenses, managing groups, building Planner task boards, and sending welcome emails.",
+    "url": "https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/da-employee-onboarding-agent",
+    "downloadUrl": "https://pnp.github.io/download-partial/?url=https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/da-employee-onboarding-agent",
+    "longDescription": [
+      "This sample demonstrates how to build a declarative agent for Microsoft 365 Copilot using TypeSpec. The agent uses Microsoft Graph API to automate the employee onboarding workflow end-to-end: creating Entra ID user accounts, assigning Microsoft 365 licenses, adding users to department groups and Teams, generating a Planner onboarding task board for managers, and sending personalised welcome emails. It also supports offboarding by disabling accounts, revoking licenses, and removing group memberships."
+    ],
+    "creationDateTime": "2026-06-04",
+    "updateDateTime": "2026-06-04",
+    "products": ["Microsoft 365 Copilot"],
+    "metadata": [
+      { "key": "PLATFORM", "value": "Node.js" },
+      { "key": "API-PLUGIN", "value": "Yes" },
+      { "key": "TYPESPEC", "value": "Yes" },
+      { "key": "GRAPH-CONNECTOR", "value": "No" }
+    ],
+    "thumbnails": [
+      {
+        "type": "image",
+        "order": 100,
+        "url": "https://github.com/pnp/copilot-pro-dev-samples/raw/main/samples/da-employee-onboarding-agent/assets/onboarding-demo.png",
+        "alt": "Employee Onboarding Buddy creating a new user account in Microsoft 365 Copilot"
+      }
+    ],
+    "authors": [],
+    "references": [
+      {
+        "name": "Microsoft 365 Copilot extensibility",
+        "url": "https://learn.microsoft.com/microsoft-365-copilot/extensibility/"
+      },
+      {
+        "name": "Build declarative agents with TypeSpec for Microsoft 365 Copilot",
+        "url": "https://learn.microsoft.com/microsoft-365-copilot/extensibility/build-declarative-agents-typespec"
+      },
+      {
+        "name": "Microsoft Graph: Create user",
+        "url": "https://learn.microsoft.com/graph/api/user-post-users"
+      },
+      {
+        "name": "Microsoft Graph: Assign license",
+        "url": "https://learn.microsoft.com/graph/api/user-assignlicense"
+      },
+      {
+        "name": "Microsoft Graph: Add group member",
+        "url": "https://learn.microsoft.com/graph/api/group-post-members"
+      },
+      {
+        "name": "Microsoft Graph: Create Planner task",
+        "url": "https://learn.microsoft.com/graph/api/planner-post-tasks"
+      }
+    ]
+  }
+]
