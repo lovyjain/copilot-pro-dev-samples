@@ -69,19 +69,30 @@ Version | Date | Author | Comments
 
 ### 1. Prepare your SharePoint site
 
+Sample data files are included in `src/sharepoint-data/` to help you get started quickly:
+
+| File | Purpose |
+|---|---|
+| `sample-course-catalog.csv` | 50 sample courses — import directly into the SharePoint Courses list |
+| `student-handbook.md` | Student handbook document — upload to Shared Documents as-is |
+
+**Steps:**
+
 1. Create (or reuse) a SharePoint site, e.g. `https://YOUR_TENANT.sharepoint.com/sites/YOUR_SITE`.
 2. Create a **Courses** list with the following columns:
 
    | Column internal name | Type | Notes |
    |---|---|---|
    | `Title` | Single line of text | Course code, e.g. `CS101` |
-   | `title` | Single line of text | Course name, e.g. `Intro to Computer Science` |
+   | `title` | Single line of text | Course name |
    | `credits` | Number | Credit hours |
-   | `prerequisites` | Single line of text | Comma-separated course codes, or blank |
-   | `degree_requirement` | Single line of text | Degree area, e.g. `Core`, `Elective` |
-   | `semester_offered` | Single line of text | e.g. `Fall 2026, Spring 2027` |
+   | `prerequisites` | Single line of text | Semicolon-separated course codes, or `None` |
+   | `degree_requirement` | Single line of text | e.g. `General Education`, `Major Required`, `Major Elective`, `Free Elective` |
+   | `semester_offered` | Single line of text | Semicolon-separated semesters, e.g. `Fall;Spring` |
 
-3. Upload your `student-handbook.md` (or `.docx`) to the site's **Shared Documents** library.
+3. Import the sample data from `src/sharepoint-data/sample-course-catalog.csv` into the Courses list. You can use the SharePoint **Import Spreadsheet** app or paste rows manually.
+
+4. Upload `src/sharepoint-data/student-handbook.md` to the site's **Shared Documents** library. The agent uses this file as the grounding document for all policy and graduation questions.
 
 ### 2. Prepare Microsoft Planner
 
