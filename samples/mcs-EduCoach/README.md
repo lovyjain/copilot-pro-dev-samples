@@ -20,6 +20,12 @@ The agent is published to **Microsoft Teams** and **Microsoft 365 Copilot** and 
 
 ![EduCoach in Microsoft Teams](./assets/screenshot.png)
 
+## Demo
+
+[![EduCoach Demo](https://img.youtube.com/vi/0vh3zlRdgyg/hqdefault.jpg)](https://www.youtube.com/watch?v=0vh3zlRdgyg)
+
+> Watch the full walkthrough on YouTube: [EduCoach – Academic Advising Agent Demo](https://www.youtube.com/watch?v=0vh3zlRdgyg)
+
 ## Frameworks
 
 ![drop](https://img.shields.io/badge/Microsoft&nbsp;Copilot&nbsp;Studio-latest-green.svg)
