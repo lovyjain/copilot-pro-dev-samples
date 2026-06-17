@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://aka.ms/teams-toolkit/v1.8/yaml.schema.json
+# Lifecycle for the Microsoft 365 Agents Playground: runs the agent fully
+# locally with NO Microsoft 365 tenant, Azure subscription, or credentials.
+version: v1.8
+
+deploy:
+  - uses: cli/runNpmCommand
+    name: install dependencies
+    with:
+      args: install --no-audit
+
+  - uses: file/createOrUpdateEnvironmentFile
+    with:
+      target: ./.localConfigs.playground
+      envs:
+        PORT: ${{PORT}}
+        USE_FAKE_LLM: ${{USE_FAKE_LLM}}
+        MCP_SERVER_URL: ${{MCP_SERVER_URL}}
+        AZURE_OPENAI_DEPLOYMENT: ${{AZURE_OPENAI_DEPLOYMENT}}
+        AZURE_OPENAI_API_VERSION: ${{AZURE_OPENAI_API_VERSION}}
+        SECRET_AZURE_OPENAI_API_KEY: ${{SECRET_AZURE_OPENAI_API_KEY}}
+        AZURE_OPENAI_ENDPOINT: ${{AZURE_OPENAI_ENDPOINT}}
+        SECRET_AZURE_STORAGE_CONNECTION_STRING: ${{SECRET_AZURE_STORAGE_CONNECTION_STRING}}

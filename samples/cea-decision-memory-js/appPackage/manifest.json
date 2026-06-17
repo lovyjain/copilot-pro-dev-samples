@@ -1,0 +1,62 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.22/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.22",
+  "version": "1.0.0",
+  "id": "${{TEAMS_APP_ID}}",
+  "developer": {
+    "name": "Lovy Jain",
+    "websiteUrl": "https://github.com/lovyjain/ebterprise-agent",
+    "privacyUrl": "https://github.com/lovyjain/ebterprise-agent#privacy",
+    "termsOfUseUrl": "https://github.com/lovyjain/ebterprise-agent#terms-of-use"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "Decision Memory${{APP_NAME_SUFFIX}}",
+    "full": "Decision Memory — institutional memory for organizational decisions"
+  },
+  "description": {
+    "short": "Ask why decisions were made and catch proposals that conflict with them.",
+    "full": "Decision Memory is a custom engine agent that acts as your organization's institutional memory. It answers \"why did we decide X?\" questions grounded in your decision records, finds the current standard for any topic (following supersession chains), proactively detects when a new proposal conflicts with standing decisions, and drafts new decision records with explicit confirmation before anything is saved. It brings its own model, so it works in Microsoft 365 Copilot Chat and Teams without a Microsoft 365 Copilot license."
+  },
+  "accentColor": "#4F46E5",
+  "bots": [
+    {
+      "botId": "${{BOT_ID}}",
+      "scopes": ["personal", "team", "groupChat", "copilot"],
+      "supportsFiles": false,
+      "isNotificationOnly": false,
+      "commandLists": [
+        {
+          "scopes": ["personal", "copilot"],
+          "commands": [
+            {
+              "title": "Why did we choose PostgreSQL?",
+              "description": "Ask why a past decision was made"
+            },
+            {
+              "title": "We're proposing to use MongoDB for the orders service",
+              "description": "Check a new proposal for conflicts with standing decisions"
+            },
+            {
+              "title": "What is our current standard for partner APIs?",
+              "description": "Find the decision currently in force, following supersessions"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "copilotAgents": {
+    "customEngineAgents": [
+      {
+        "id": "${{BOT_ID}}",
+        "type": "bot"
+      }
+    ]
+  },
+  "permissions": ["identity", "messageTeamMembers"],
+  "validDomains": []
+}

@@ -1,0 +1,79 @@
+# yaml-language-server: $schema=https://aka.ms/teams-toolkit/v1.8/yaml.schema.json
+# Local debug against a real Microsoft 365 tenant: registers the bot, builds
+# the app package, and sideloads it so the agent appears in Teams and in
+# Microsoft 365 Copilot Chat (no Microsoft 365 Copilot license required).
+version: v1.8
+
+provision:
+  - uses: teamsApp/create
+    with:
+      name: decision-memory${{APP_NAME_SUFFIX}}
+    writeToEnvironmentFile:
+      teamsAppId: TEAMS_APP_ID
+
+  - uses: aadApp/create
+    with:
+      name: decision-memory${{APP_NAME_SUFFIX}}
+      generateClientSecret: true
+      signInAudience: AzureADMyOrg
+    writeToEnvironmentFile:
+      clientId: BOT_ID
+      clientSecret: SECRET_BOT_PASSWORD
+      objectId: BOT_OBJECT_ID
+      tenantId: BOT_TENANT_ID
+
+  - uses: botFramework/create
+    with:
+      botId: ${{BOT_ID}}
+      name: decision-memory
+      messagingEndpoint: ${{BOT_ENDPOINT}}/api/messages
+      description: "Institutional memory agent for organizational decisions"
+      channels:
+        - name: msteams
+
+  - uses: teamsApp/validateManifest
+    with:
+      manifestPath: ./appPackage/manifest.json
+
+  - uses: teamsApp/zipAppPackage
+    with:
+      manifestPath: ./appPackage/manifest.json
+      outputZipPath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
+      outputFolder: ./appPackage/build
+
+  - uses: teamsApp/validateAppPackage
+    with:
+      appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
+
+  - uses: teamsApp/update
+    with:
+      appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
+
+  # Surfaces the agent in Microsoft 365 Copilot Chat (works with Copilot Free).
+  - uses: teamsApp/extendToM365
+    with:
+      appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
+    writeToEnvironmentFile:
+      titleId: M365_TITLE_ID
+      appId: M365_APP_ID
+
+deploy:
+  - uses: cli/runNpmCommand
+    name: install dependencies
+    with:
+      args: install --no-audit
+
+  - uses: file/createOrUpdateEnvironmentFile
+    with:
+      target: ./.localConfigs
+      envs:
+        clientId: ${{BOT_ID}}
+        clientSecret: ${{SECRET_BOT_PASSWORD}}
+        tenantId: ${{BOT_TENANT_ID}}
+        USE_FAKE_LLM: ${{USE_FAKE_LLM}}
+        MCP_SERVER_URL: http://localhost:3979/mcp
+        AZURE_OPENAI_ENDPOINT: ${{AZURE_OPENAI_ENDPOINT}}
+        AZURE_OPENAI_DEPLOYMENT: ${{AZURE_OPENAI_DEPLOYMENT}}
+        AZURE_OPENAI_API_VERSION: ${{AZURE_OPENAI_API_VERSION}}
+        SECRET_AZURE_OPENAI_API_KEY: ${{SECRET_AZURE_OPENAI_API_KEY}}
+        SECRET_AZURE_STORAGE_CONNECTION_STRING: ${{SECRET_AZURE_STORAGE_CONNECTION_STRING}}

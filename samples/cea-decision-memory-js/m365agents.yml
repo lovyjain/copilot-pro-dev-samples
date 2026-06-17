@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=https://aka.ms/teams-toolkit/v1.8/yaml.schema.json
+# Remote lifecycle: validates and publishes the app package for org-wide
+# rollout. Host the Node service wherever you like (Azure Container Apps,
+# App Service, AKS) and point BOT_ENDPOINT at it before provisioning.
+version: v1.8
+
+provision:
+  - uses: teamsApp/create
+    with:
+      name: decision-memory${{APP_NAME_SUFFIX}}
+    writeToEnvironmentFile:
+      teamsAppId: TEAMS_APP_ID
+
+  - uses: aadApp/create
+    with:
+      name: decision-memory${{APP_NAME_SUFFIX}}
+      generateClientSecret: true
+      # Single-tenant: a multi-tenant (AzureADMultipleOrgs) bot acquires its
+      # outbound connector token from the botframework.com authority, which the
+      # connector rejects for this registration (replies fail with 401). Using
+      # AzureADMyOrg + writing tenantId makes the SDK use the home-tenant
+      # authority so connector POSTs succeed.
+      signInAudience: AzureADMyOrg
+    writeToEnvironmentFile:
+      clientId: BOT_ID
+      clientSecret: SECRET_BOT_PASSWORD
+      objectId: BOT_OBJECT_ID
+      tenantId: BOT_TENANT_ID
+
+  - uses: botFramework/create
+    with:
+      botId: ${{BOT_ID}}
+      name: decision-memory
+      messagingEndpoint: ${{BOT_ENDPOINT}}/api/messages
+      description: "Institutional memory agent for organizational decisions"
+      channels:
+        - name: msteams
+
+  - uses: teamsApp/validateManifest
+    with:
+      manifestPath: ./appPackage/manifest.json
+
+  - uses: teamsApp/zipAppPackage
+    with:
+      manifestPath: ./appPackage/manifest.json
+      outputZipPath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
+      outputFolder: ./appPackage/build
+
+  - uses: teamsApp/validateAppPackage
+    with:
+      appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
+
+  - uses: teamsApp/update
+    with:
+      appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
+
+  # Surfaces the agent in Microsoft 365 Copilot Chat (works with Copilot Free).
+  - uses: teamsApp/extendToM365
+    with:
+      appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
+    writeToEnvironmentFile:
+      titleId: M365_TITLE_ID
+      appId: M365_APP_ID
+
+publish:
+  - uses: teamsApp/publishAppPackage
+    with:
+      appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
+    writeToEnvironmentFile:
+      publishedAppId: TEAMS_APP_PUBLISHED_APP_ID
+projectId: 88970506-a937-4b50-a85a-eec1a623be1a
