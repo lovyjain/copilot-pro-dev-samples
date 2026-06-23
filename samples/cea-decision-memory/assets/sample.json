@@ -1,0 +1,73 @@
+[
+    {
+      "name": "pnp-copilot-pro-dev-cea-decision-memory",
+      "source": "pnp",
+      "title": "Decision Memory - Institutional Memory Custom Engine Agent",
+      "shortDescription": "A custom engine agent that remembers why your organization decided things and catches proposals that conflict with standing decisions, built with the Microsoft 365 Agents SDK and Model Context Protocol (MCP)",
+      "url": "https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/cea-decision-memory",
+      "downloadUrl": "https://pnp.github.io/download-partial/?url=https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/cea-decision-memory",
+      "longDescription": [
+        "Decision Memory is a custom engine agent that acts as your organization's institutional memory. It answers \"why did we decide X?\" questions grounded in your decision records, finds the current standard for any topic by following supersession chains, proactively detects when a new proposal conflicts with standing decisions, and drafts new decision records with explicit confirmation before anything is saved. Built with the Microsoft 365 Agents SDK and powered by the Model Context Protocol (MCP), it brings its own model so it runs in Microsoft 365 Copilot Chat and Teams without a Microsoft 365 Copilot license."
+    ],
+      "creationDateTime": "2026-06-23",
+      "updateDateTime": "2026-06-23",
+      "products": [
+        "Microsoft 365 Copilot"
+      ],
+      "metadata": [
+        {
+          "key": "PLATFORM",
+          "value": "Node.js"
+        },
+        {
+          "key": "LANGUAGE",
+          "value": "TypeScript"
+        },
+        {
+          "key": "API-PLUGIN",
+          "value": "No"
+        },
+        {
+          "key": "GRAPH-CONNECTOR",
+          "value": "No"
+        }
+      ],
+      "thumbnails": [
+        {
+          "type": "image",
+          "order": 100,
+          "url": "https://raw.githubusercontent.com/pnp/copilot-pro-dev-samples/refs/heads/main/samples/cea-decision-memory/assets/Decision-Memory.png",
+          "alt": "Decision Memory custom engine agent for Microsoft 365 Copilot Chat and Teams"
+        }
+      ],
+      "authors": [
+        {
+          "gitHubAccount": "lovyjain",
+          "pictureUrl": "https://github.com/lovyjain.png",
+          "name": "Lovy Jain"
+        }
+      ],
+      "references": [
+        {
+          "name": "Microsoft 365 Copilot extensibility",
+          "description": "Learn more about what Microsoft 365 Copilot and how you can extend it.",
+          "url": "https://learn.microsoft.com/microsoft-365-copilot/extensibility/"
+        },
+        {
+          "name": "Custom engine agents for Microsoft 365 overview",
+          "description": "Learn more about what custom engine agents for Microsoft 365 Copilot are.",
+          "url": "https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/overview-custom-engine-agent"
+        },
+        {
+          "name": "Create JavaScript agents in Visual Studio Code with the Microsoft 365 Agents Toolkit",
+          "description": "Learn how to build a custom engine agent for Microsoft 365 Copilot.",
+          "url": "https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/create-new-toolkit-project-vsc?context=%2Fmicrosoft-365-copilot%2Fextensibility%2Fcontext"
+        },
+        {
+          "name": "Model Context Protocol",
+          "description": "Learn more about the Model Context Protocol (MCP) used to expose the decision store tools.",
+          "url": "https://modelcontextprotocol.io"
+        }
+      ]
+    }
+  ]

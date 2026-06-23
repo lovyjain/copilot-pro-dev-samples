@@ -46,6 +46,52 @@
     "Folder": "cea-techpulse"
   },
   {
+    "name": "pnp-copilot-pro-dev-cea-decision-memory",
+    "title": "Decision Memory - Institutional Memory Custom Engine Agent",
+    "shortDescription": "A custom engine agent that remembers why your organization decided things and catches proposals that conflict with standing decisions, built with the Microsoft 365 Agents SDK and Model Context Protocol (MCP)",
+    "url": "https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/cea-decision-memory",
+    "downloadUrl": "https://pnp.github.io/download-partial/?url=https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/cea-decision-memory",
+    "creationDateTime": "2026-06-23",
+    "updateDateTime": "2026-06-23",
+    "products": [
+      "Microsoft 365 Copilot"
+    ],
+    "metadata": [
+      {
+        "key": "PLATFORM",
+        "value": "Node.js"
+      },
+      {
+        "key": "LANGUAGE",
+        "value": "TypeScript"
+      },
+      {
+        "key": "API-PLUGIN",
+        "value": "No"
+      },
+      {
+        "key": "GRAPH-CONNECTOR",
+        "value": "No"
+      }
+    ],
+    "thumbnails": [
+      {
+        "type": "image",
+        "order": 100,
+        "url": "https://raw.githubusercontent.com/pnp/copilot-pro-dev-samples/refs/heads/main/samples/cea-decision-memory/assets/Decision-Memory.png",
+        "alt": "Decision Memory custom engine agent for Microsoft 365 Copilot Chat and Teams"
+      }
+    ],
+    "authors": [
+      {
+        "gitHubAccount": "lovyjain",
+        "pictureUrl": "https://github.com/lovyjain.png",
+        "name": "Lovy Jain"
+      }
+    ],
+    "Folder": "cea-decision-memory"
+  },
+  {
     "name": "officedev-microsoft-365-copilot-samples-cext-trey-research-csharp",
     "title": "Trey Research C#",
     "shortDescription": "This sample demonstrates how to create an agent that interacts with a consulting API to provide information about consultants and projects.",
