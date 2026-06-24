@@ -11,7 +11,7 @@
 
 Version|Date|Author|Comments
 -------|----|----|--------
-1.0|June 23, 2026|Lovy Jain|Initial release
+1.0|June 2, 2026|Lovy Jain|Initial release
 
 ## The problem
 
