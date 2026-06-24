@@ -9,8 +9,8 @@
       "longDescription": [
         "Decision Memory is a custom engine agent that acts as your organization's institutional memory. It answers \"why did we decide X?\" questions grounded in your decision records, finds the current standard for any topic by following supersession chains, proactively detects when a new proposal conflicts with standing decisions, and drafts new decision records with explicit confirmation before anything is saved. Built with the Microsoft 365 Agents SDK and powered by the Model Context Protocol (MCP), it brings its own model so it runs in Microsoft 365 Copilot Chat and Teams without a Microsoft 365 Copilot license."
     ],
-      "creationDateTime": "2026-06-23",
-      "updateDateTime": "2026-06-23",
+      "creationDateTime": "2026-06-02",
+      "updateDateTime": "2026-06-02",
       "products": [
         "Microsoft 365 Copilot"
       ],
