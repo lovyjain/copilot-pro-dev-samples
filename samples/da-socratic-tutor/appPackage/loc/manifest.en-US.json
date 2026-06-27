@@ -1,0 +1,22 @@
+{
+    "name.short": "Socratic Tutor",
+    "name.full": "Socratic Tutor",
+    "description.short": "Learn by discovery with a Socratic questioning tutor",
+    "description.full": "Socratic Tutor is a teaching agent that uses the Socratic method to guide you to understanding through reflective questioning instead of direct answers. It helps you build critical-thinking and reasoning skills across programming, academic, and professional topics. Socratic Tutor is designed to work with Microsoft 365 Copilot.",
+    "localizationKeys": {
+        "agentName": "Socratic Tutor",
+        "agentDescription": "Socratic Tutor guides you to discover knowledge through questioning.",
+        "agentCSTitle1": "Teach me a programming concept",
+        "agentCSText1": "Guide me to understand how async/await works in C# through questions.",
+        "agentCSTitle2": "Understand a design pattern",
+        "agentCSText2": "Help me discover when and why to use the Factory pattern.",
+        "agentCSTitle3": "Explain an algorithm",
+        "agentCSText3": "Walk me through binary search with guiding questions.",
+        "agentCSTitle4": "Prepare for a technical interview",
+        "agentCSText4": "Help me reason through a common technical interview topic.",
+        "agentCSTitle5": "Grasp the SOLID principles",
+        "agentCSText5": "Lead me to understand the SOLID design principles step by step.",
+        "agentCSTitle6": "Explore a new topic",
+        "agentCSText6": "Help me learn a concept by discovering it myself."
+    }
+}

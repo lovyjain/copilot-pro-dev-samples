@@ -1,0 +1,73 @@
+[
+  {
+    "name": "pnp-copilot-pro-dev-da-socratic-tutor",
+    "source": "pnp",
+    "title": "Socratic Tutor Declarative Agent for Microsoft 365 Copilot",
+    "shortDescription": "A declarative agent that teaches by asking questions, using the Socratic method to guide learners to discover knowledge.",
+    "url": "https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/da-socratic-tutor",
+    "downloadUrl": "https://pnp.github.io/download-partial/?url=https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/da-socratic-tutor",
+    "longDescription": [
+      "Socratic Tutor is an instruction-only declarative agent for Microsoft 365 Copilot that teaches by asking instead of telling. It uses the Socratic method - clarifying questions, probing assumptions, asking for evidence, exploring alternative viewpoints, examining implications, and meta-questioning - to guide learners to discover concepts on their own and develop critical-thinking skills across programming, academic, and professional topics. This sample was converted from the socratic-tutor agent instruction in the pnp/copilot-prompts repository."
+    ],
+    "creationDateTime": "2026-06-27",
+    "updateDateTime": "2026-06-27",
+    "products": [
+      "Microsoft 365 Copilot"
+    ],
+    "metadata": [
+      {
+        "key": "PLATFORM",
+        "value": "Node.js"
+      },
+      {
+        "key": "LANGUAGE",
+        "value": "TypeScript"
+      },
+      {
+        "key": "API-PLUGIN",
+        "value": "No"
+      },
+      {
+        "key": "GRAPH-CONNECTOR",
+        "value": "No"
+      }
+    ],
+    "thumbnails": [
+      {
+        "type": "image",
+        "order": 100,
+        "url": "https://raw.githubusercontent.com/pnp/copilot-pro-dev-samples/refs/heads/main/samples/da-socratic-tutor/assets/socratic-tutor.png",
+        "alt": "Socratic Tutor Declarative Agent for Microsoft 365 Copilot"
+      }
+    ],
+    "authors": [
+      {
+        "gitHubAccount": "JayanthT7",
+        "pictureUrl": "https://github.com/JayanthT7.png",
+        "name": "Jayanth T"
+      },
+      {
+        "gitHubAccount": "lovyjain",
+        "pictureUrl": "https://github.com/lovyjain.png",
+        "name": "lovyjain"
+      }
+    ],
+    "references": [
+      {
+        "name": "Microsoft 365 Copilot extensibility",
+        "description": "Learn more about what Microsoft 365 Copilot and how you can extend it.",
+        "url": "https://learn.microsoft.com/microsoft-365-copilot/extensibility/"
+      },
+      {
+        "name": "Declarative agents for Microsoft 365 Copilot overview",
+        "description": "Learn more about what declarative agents for Microsoft 365 Copilot are.",
+        "url": "https://learn.microsoft.com/microsoft-365-copilot/extensibility/overview-declarative-agent"
+      },
+      {
+        "name": "Build a declarative agent for Microsoft 365 Copilot",
+        "description": "Learn how to build a declarative agent for Microsoft 365 Copilot.",
+        "url": "https://learn.microsoft.com/microsoft-365-copilot/extensibility/build-declarative-agents"
+      }
+    ]
+  }
+]

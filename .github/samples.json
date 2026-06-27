@@ -2871,5 +2871,56 @@
       }
     ],
     "Folder": "da-XBoxGameMaster"
+  },
+  {
+    "name": "pnp-copilot-pro-dev-da-socratic-tutor",
+    "title": "Socratic Tutor Declarative Agent for Microsoft 365 Copilot",
+    "shortDescription": "A declarative agent that teaches by asking questions, using the Socratic method to guide learners to discover knowledge.",
+    "url": "https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/da-socratic-tutor",
+    "downloadUrl": "https://pnp.github.io/download-partial/?url=https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/da-socratic-tutor",
+    "creationDateTime": "2026-06-27",
+    "updateDateTime": "2026-06-27",
+    "products": [
+      "Microsoft 365 Copilot"
+    ],
+    "metadata": [
+      {
+        "key": "PLATFORM",
+        "value": "Node.js"
+      },
+      {
+        "key": "LANGUAGE",
+        "value": "TypeScript"
+      },
+      {
+        "key": "API-PLUGIN",
+        "value": "No"
+      },
+      {
+        "key": "GRAPH-CONNECTOR",
+        "value": "No"
+      }
+    ],
+    "thumbnails": [
+      {
+        "type": "image",
+        "order": 100,
+        "url": "https://raw.githubusercontent.com/pnp/copilot-pro-dev-samples/refs/heads/main/samples/da-socratic-tutor/assets/socratic-tutor.png",
+        "alt": "Socratic Tutor Declarative Agent for Microsoft 365 Copilot"
+      }
+    ],
+    "authors": [
+      {
+        "gitHubAccount": "JayanthT7",
+        "pictureUrl": "https://github.com/JayanthT7.png",
+        "name": "Jayanth T"
+      },
+      {
+        "gitHubAccount": "lovyjain",
+        "pictureUrl": "https://github.com/lovyjain.png",
+        "name": "lovyjain"
+      }
+    ],
+    "Folder": "da-socratic-tutor"
   }
 ]

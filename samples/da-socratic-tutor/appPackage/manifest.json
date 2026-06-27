@@ -1,0 +1,43 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
+    "manifestVersion": "1.19",
+    "version": "1.0.0",
+    "id": "${{TEAMS_APP_ID}}",
+    "developer": {
+        "name": "Teams App, Inc.",
+        "websiteUrl": "https://www.example.com",
+        "privacyUrl": "https://www.example.com/privacy",
+        "termsOfUseUrl": "https://www.example.com/termofuse"
+    },
+    "icons": {
+        "color": "color.png",
+        "outline": "outline.png"
+    },
+    "name": {
+        "short": "Socratic Tutor",
+        "full": "Socratic Tutor"
+    },
+    "description": {
+        "short": "Learn by discovery with a Socratic questioning tutor",
+        "full": "Socratic Tutor is a teaching agent that uses the Socratic method to guide you to understanding through reflective questioning instead of direct answers. It helps you build critical-thinking and reasoning skills across programming, academic, and professional topics. Socratic Tutor is designed to work with Microsoft 365 Copilot."
+    },
+    "accentColor": "#FFFFFF",
+    "localizationInfo": {
+        "defaultLanguageTag": "en-US",
+        "defaultLanguageFile": "loc/manifest.en-US.json"
+    },
+    "composeExtensions": [],
+    "permissions": [
+        "identity",
+        "messageTeamMembers"
+    ],
+    "copilotAgents": {
+        "declarativeAgents": [
+            {
+                "id": "declarativeAgent",
+                "file": "declarativeAgent.json"
+            }
+        ]
+    },
+    "validDomains": []
+}
