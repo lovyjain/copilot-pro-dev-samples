@@ -59,9 +59,13 @@ Do **not** copy `appPackage/color.png`, `appPackage/outline.png`, `assets/*.png`
 |---|---|---|
 | `name.short` / `name.full` | friendly agent name (drop the word "Agent") | 30 / 100 |
 | `description.short` (manifest + loc + `sample.json` `shortDescription`) | source `shortDescription` | 80 |
-| `description.full` (manifest + loc) and `sample.json` `longDescription` | source `longDescription` (join paragraphs) | 4000 |
+| `description.full` (manifest + loc) and `sample.json` `longDescription` | a normalized 2–4 sentence paragraph (see rule below) | 4000 |
 
 The same `shortDescription` text must appear in `manifest.json`, `loc/manifest.en-US.json`, the root README table, and `sample.json`. The `longDescription`/`description.full` and the README Summary must be the **same subject** as the short one.
+
+**`shortDescription`** — reuse the source's verbatim (it is already concise and clean); only trim if it exceeds 80 chars.
+
+**`longDescription` normalization** — do NOT blindly paste the source's `longDescription`. Source long descriptions are often a single fragment, empty, or end in a literal `...` (truncated by the original author). Always write a clean **2–4 sentence** paragraph that: (1) names the agent and that it is a declarative agent for Microsoft 365 Copilot, (2) summarizes what it does and who it helps — grounded in the actual `instruction.txt` content and consistent with the `shortDescription`, and (3) ends with a sentence noting it was converted from the `pnp/copilot-prompts` agent instruction. Never leave a trailing `...` or a one-fragment description. Use this same paragraph for `sample.json` `longDescription`, `manifest`/`loc` `description.full`, and the README Summary.
 
 Files to create (copy only the JSON/yaml *shape* from `da-WritingCoach`):
 
@@ -119,7 +123,7 @@ Reuse the `declarative-agent-sample-review` skill's checklist, plus:
 8. **Instruction completeness:** `instruction.txt` reproduces the full source prompt (first/last lines + line count match); never ends mid-section.
 9. **Author fidelity:** every source author appears in `sample.json` `authors` with `gitHubAccount`, `name`, and original `pictureUrl` unchanged, and in README Contributors.
 10. **No branded assets carried over:** `color.png` md5 = `22056b953eb3e8a2598790d3837a5df0` and `outline.png` md5 = `fa8e16ac87439703613c7613157214bb` (or intentional sample-specific icons), and **not** WritingCoach's (`a47041057032ae7048c99a9d6b7f9484` / `9be7968e4792088592556ee4c8ffc279`). The screenshot is the source's image or the pending-image placeholder — never another sample's screenshot.
-11. **Description consistency:** the same `shortDescription` appears in `manifest.json`, `loc`, `sample.json`, and the README table; `description.short` ≤ 80 chars; `longDescription`/README Summary share the same subject as the short description.
+11. **Description consistency:** the same `shortDescription` appears in `manifest.json`, `loc`, `sample.json`, and the README table; `description.short` ≤ 80 chars; `longDescription`/README Summary share the same subject as the short description, are a clean 2–4 sentence paragraph, and do **not** end in a literal `...` or read as a single fragment.
 
 ```bash
 # quick asset check
