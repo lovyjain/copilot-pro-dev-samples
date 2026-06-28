@@ -2875,7 +2875,7 @@
   {
     "name": "pnp-copilot-pro-dev-da-socratic-tutor",
     "title": "Socratic Tutor Declarative Agent for Microsoft 365 Copilot",
-    "shortDescription": "A declarative agent that teaches by asking questions, using the Socratic method to guide learners to discover knowledge.",
+    "shortDescription": "A teaching agent that uses Socratic questioning to guide learning.",
     "url": "https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/da-socratic-tutor",
     "downloadUrl": "https://pnp.github.io/download-partial/?url=https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/da-socratic-tutor",
     "creationDateTime": "2026-06-27",

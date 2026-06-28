@@ -8,9 +8,6 @@ The agent's behaviour is defined entirely through natural-language instructions 
 
 This sample was converted from the [`socratic-tutor` agent instruction](https://github.com/pnp/copilot-prompts/tree/main/samples/agent-instructions/socratic-tutor) in the [pnp/copilot-prompts](https://github.com/pnp/copilot-prompts) repository into a fully packaged declarative agent sample.
 
-> [!NOTE]
-> The image in the `assets` folder (`socratic-tutor.png`) is a placeholder. Replace it with a high-quality screenshot (1920x1080) of the agent in action before submitting upstream.
-
 ![Socratic Tutor](assets/socratic-tutor.png)
 
 ## Contributors
