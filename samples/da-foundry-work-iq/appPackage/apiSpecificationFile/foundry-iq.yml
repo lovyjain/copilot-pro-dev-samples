@@ -1,0 +1,108 @@
+openapi: 3.0.3
+info:
+  title: Foundry IQ knowledge base retrieval API
+  description: Agentic retrieval endpoint of a Foundry IQ knowledge base hosted in Azure AI Search. Returns grounding passages and source references for a natural language query.
+  version: 1.0.0
+servers:
+  - url: ${{FOUNDRY_IQ_SEARCH_ENDPOINT}}
+    description: Azure AI Search service that hosts the Foundry IQ knowledge base
+paths:
+  /knowledgebases/${{FOUNDRY_IQ_KNOWLEDGE_BASE_NAME}}/retrieve:
+    post:
+      operationId: retrieveFoundryKnowledge
+      summary: Retrieve knowledge from the Foundry IQ knowledge base
+      description: Runs agentic retrieval over the knowledge sources of the Foundry IQ knowledge base and returns relevant content passages with references to the source documents.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: api-version
+          in: query
+          required: true
+          description: The Azure AI Search REST API version. Always use 2026-04-01.
+          schema:
+            type: string
+            enum:
+              - 2026-04-01
+            default: 2026-04-01
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - messages
+              properties:
+                messages:
+                  type: array
+                  description: The conversation to ground. Provide a single user message that contains the retrieval query.
+                  items:
+                    type: object
+                    required:
+                      - role
+                      - content
+                    properties:
+                      role:
+                        type: string
+                        description: The role of the message author. Always use user.
+                        enum:
+                          - user
+                        default: user
+                      content:
+                        type: array
+                        description: The message content parts. Provide a single text part with the retrieval query.
+                        items:
+                          type: object
+                          required:
+                            - type
+                            - text
+                          properties:
+                            type:
+                              type: string
+                              description: The content part type. Always use text.
+                              enum:
+                                - text
+                              default: text
+                            text:
+                              type: string
+                              description: The user's question, rephrased as a clear standalone retrieval query.
+      responses:
+        '200':
+          description: Retrieval results with grounding content and source references.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: array
+                    description: Messages containing the retrieved grounding content.
+                    items:
+                      type: object
+                      properties:
+                        content:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                              text:
+                                type: string
+                                description: Retrieved content passages, serialized as text.
+                  references:
+                    type: array
+                    description: References to the source documents behind the retrieved content.
+                    items:
+                      type: object
+                  activity:
+                    type: array
+                    description: Diagnostic log of the retrieval steps that were executed.
+                    items:
+                      type: object
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: api-key

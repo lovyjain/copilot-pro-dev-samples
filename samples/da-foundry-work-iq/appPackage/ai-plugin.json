@@ -1,0 +1,35 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.4/schema.json",
+    "schema_version": "v2.4",
+    "namespace": "foundryiq",
+    "name_for_human": "Foundry IQ Knowledge Base",
+    "description_for_human": "Retrieves grounding content from a Foundry IQ knowledge base in Azure AI Search",
+    "description_for_model": "Performs agentic retrieval against a Foundry IQ knowledge base hosted in Azure AI Search. Use this plugin to look up curated domain, product, or reference knowledge. Pass the user's question as a clear standalone query in the text field of the first user message.",
+    "functions": [
+        {
+            "name": "retrieveFoundryKnowledge",
+            "description": "Retrieves relevant passages and source references from the Foundry IQ knowledge base for a natural language question. Returns extracted content the model should use as grounding to answer, along with references to the source documents.",
+            "capabilities": {
+                "response_semantics": {
+                    "data_path": "$.response"
+                }
+            }
+        }
+    ],
+    "runtimes": [
+        {
+            "type": "OpenApi",
+            "auth": {
+                "type": "ApiKeyPluginVault",
+                "reference_id": "${{APIKEY_REGISTRATION_ID}}"
+            },
+            "spec": {
+                "url": "apiSpecificationFile/foundry-iq.yml",
+                "progress_style": "ShowUsageWithInputAndOutput"
+            },
+            "run_for_functions": [
+                "retrieveFoundryKnowledge"
+            ]
+        }
+    ]
+}

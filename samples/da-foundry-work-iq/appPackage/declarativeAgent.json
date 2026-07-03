@@ -1,0 +1,48 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.7/schema.json",
+    "version": "v1.7",
+    "name": "IQ Bridge",
+    "description": "An agent that answers questions from your Microsoft 365 work data (Work IQ) and from a Foundry IQ knowledge base hosted in a different Microsoft Entra directory (Azure AI Search agentic retrieval).",
+    "instructions": "$[file('instruction.txt')]",
+    "capabilities": [
+        {
+            "name": "OneDriveAndSharePoint"
+        },
+        {
+            "name": "Email"
+        },
+        {
+            "name": "TeamsMessages"
+        },
+        {
+            "name": "People"
+        }
+    ],
+    "disclaimer": {
+        "text": "This declarative agent is provided as is without warranty of any kind, either express or implied, including any implied warranties of fitness for a particular purpose, merchantability, or non-infringement."
+    },
+    "conversation_starters": [
+        {
+            "title": "Ask the knowledge base",
+            "text": "Search the Foundry IQ knowledge base: what does our product documentation say about getting started?"
+        },
+        {
+            "title": "Catch up on work",
+            "text": "Summarize my unread emails and recent Teams messages from today"
+        },
+        {
+            "title": "Find documents",
+            "text": "Find the latest documents shared with me on SharePoint about project planning"
+        },
+        {
+            "title": "Compare sources",
+            "text": "Check both my work documents and the Foundry IQ knowledge base for information about our onboarding process"
+        }
+    ],
+    "actions": [
+        {
+            "id": "foundryIQRetrieval",
+            "file": "ai-plugin.json"
+        }
+    ]
+}

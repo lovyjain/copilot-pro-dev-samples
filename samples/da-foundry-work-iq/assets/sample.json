@@ -1,0 +1,77 @@
+[
+  {
+    "name": "pnp-copilot-pro-dev-da-foundry-work-iq",
+    "source": "pnp",
+    "title": "IQ Bridge - Work IQ and Foundry IQ agent across two Entra directories",
+    "shortDescription": "A declarative agent that answers from Microsoft 365 work data (Work IQ) and a Foundry IQ knowledge base in Azure AI Search hosted in a different Microsoft Entra directory.",
+    "url": "https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/da-foundry-work-iq",
+    "downloadUrl": "https://pnp.github.io/download-partial/?url=https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/da-foundry-work-iq",
+    "longDescription": [
+      "IQ Bridge is a declarative agent for Microsoft 365 Copilot that combines two knowledge systems: Work IQ, the intelligence layer over the user's Microsoft 365 work data (email, Teams messages, SharePoint and OneDrive documents, and people), and Foundry IQ, an agentic retrieval knowledge base hosted by Azure AI Search. The sample specifically demonstrates the cross-directory scenario where the Microsoft 365 Copilot license and the Azure subscription live in two different Microsoft Entra tenants: the knowledge base is called through an API plugin secured with an Azure AI Search API key stored in the Teams Developer Portal vault, so no cross-tenant Entra configuration is required."
+    ],
+    "creationDateTime": "2026-07-03",
+    "updateDateTime": "2026-07-03",
+    "products": [
+      "Microsoft 365 Copilot"
+    ],
+    "metadata": [
+      {
+        "key": "PLATFORM",
+        "value": "Copilot"
+      },
+      {
+        "key": "LANGUAGE",
+        "value": "JSON"
+      },
+      {
+        "key": "AGENT-TYPE",
+        "value": "Declarative Agent"
+      },
+      {
+        "key": "API-PLUGIN",
+        "value": "Yes"
+      },
+      {
+        "key": "GRAPH-CONNECTOR",
+        "value": "No"
+      }
+    ],
+    "thumbnails": [
+      {
+        "type": "image",
+        "order": 100,
+        "url": "https://github.com/pnp/copilot-pro-dev-samples/raw/main/samples/da-foundry-work-iq/assets/iq-bridge.png",
+        "alt": "IQ Bridge agent answering a question grounded in a Foundry IQ knowledge base"
+      }
+    ],
+    "authors": [
+      {
+        "gitHubAccount": "lovyjain",
+        "pictureUrl": "https://github.com/lovyjain.png",
+        "name": "Lovy Jain"
+      }
+    ],
+    "references": [
+      {
+        "name": "Work IQ overview",
+        "description": "Learn about Work IQ, the intelligence layer behind Microsoft 365 Copilot.",
+        "url": "https://learn.microsoft.com/microsoft-365/copilot/extensibility/work-iq/"
+      },
+      {
+        "name": "What is Foundry IQ?",
+        "description": "Learn about Foundry IQ knowledge bases in Microsoft Foundry and Azure AI Search.",
+        "url": "https://learn.microsoft.com/azure/foundry/agents/concepts/what-is-foundry-iq"
+      },
+      {
+        "name": "Query a knowledge base via API or MCP",
+        "description": "How to call the Azure AI Search knowledge base retrieve endpoint.",
+        "url": "https://learn.microsoft.com/azure/search/agentic-retrieval-how-to-retrieve"
+      },
+      {
+        "name": "Build declarative agents for Microsoft 365 Copilot",
+        "description": "Learn more about declarative agents for Microsoft 365 Copilot.",
+        "url": "https://learn.microsoft.com/microsoft-365-copilot/extensibility/overview-declarative-agent"
+      }
+    ]
+  }
+]
