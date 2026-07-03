@@ -1,25 +1,32 @@
-# IQ Bridge - a declarative agent that uses Work IQ and Foundry IQ across two Microsoft Entra directories
+# Escalation Assist - a post-merger support agent that combines Work IQ and Foundry IQ across two Microsoft Entra directories
 
 ## Summary
 
-IQ Bridge is a declarative agent for Microsoft 365 Copilot that answers questions from two complementary knowledge systems:
+**The real problem.** Contoso acquires Fabrikam. On day one, Contoso's support engineers start handling escalations for Fabrikam's products - but the knowledge they need is split across two Microsoft Entra directories that won't be consolidated for years:
 
-* **Work IQ** - the intelligence layer behind Microsoft 365 Copilot. The agent uses the built-in knowledge capabilities (`Email`, `TeamsMessages`, `OneDriveAndSharePoint`, `People`) so it can reason over the signed-in user's emails, Teams messages, documents, and colleagues. This runs entirely in the tenant where your Microsoft 365 Copilot license lives.
-* **Foundry IQ** - a knowledge base hosted by Azure AI Search (agentic retrieval, part of Microsoft Foundry). The agent calls the knowledge base's `retrieve` REST endpoint through an API plugin action secured with an API key.
+* The **customer context** (escalation email threads, Teams discussions, case documents, who's involved) lives in **Contoso's Microsoft 365 tenant**, where the engineers have their Microsoft 365 Copilot licenses.
+* The **product knowledge** (known issues, root causes, fixes, release notes, troubleshooting guides) lives in **Fabrikam's Azure subscription** - a completely different directory - as a **Foundry IQ knowledge base** on Azure AI Search.
 
-The key scenario this sample demonstrates: **your Microsoft 365 Copilot license and your Azure subscription are in two different Microsoft Entra directories (tenants)**. Because the Foundry IQ knowledge base is called with an Azure AI Search API key - not a Microsoft Entra token - no cross-tenant app registration, multi-tenant consent, or B2B guest setup is needed. The agent runs in the Copilot tenant; the knowledge base runs in the Azure tenant; the API key bridges the two.
+Tenant-to-tenant migrations routinely take years; escalations can't wait. Engineers today resolve this by swivel-chairing between Outlook, Teams, and a portal in another tenant with a second identity.
 
-![IQ Bridge answering a question grounded in a Foundry IQ knowledge base](./assets/iq-bridge.png)
+**The solution.** Escalation Assist is a declarative agent for Microsoft 365 Copilot that closes this gap with **zero cross-tenant Entra configuration**:
+
+* **Work IQ** - the intelligence layer behind Microsoft 365 Copilot. The agent uses the built-in knowledge capabilities (`Email`, `TeamsMessages`, `OneDriveAndSharePoint`, `People`) to gather customer context in the tenant where it runs.
+* **Foundry IQ** - the agent calls the knowledge base's agentic retrieval REST endpoint (`POST /knowledgebases/{name}/retrieve`) through an API plugin action secured with an Azure AI Search API key stored in the Teams Developer Portal vault. Because a key - not a Microsoft Entra token - crosses the boundary, **no multi-tenant app registration, cross-tenant consent, or B2B guest setup is required**.
+
+The same pattern fits any two-directory reality: subsidiaries, joint ventures, partner ecosystems, or simply a company whose Microsoft 365 and Azure estates grew up in separate directories.
+
+![Escalation Assist preparing an escalation from both knowledge sources](./assets/escalation-assist.png)
 
 ## Architecture
 
 ```text
 Microsoft Entra directory A                Microsoft Entra directory B
-(Microsoft 365 Copilot license)            (Azure subscription)
+Contoso (M365 Copilot licenses)            Fabrikam (Azure subscription)
 ┌─────────────────────────────┐            ┌──────────────────────────────┐
 │  Microsoft 365 Copilot      │            │  Azure AI Search              │
 │  ┌───────────────────────┐  │            │  ┌────────────────────────┐  │
-│  │ IQ Bridge (this DA)   │  │  api-key   │  │ Foundry IQ             │  │
+│  │ Escalation Assist     │  │  api-key   │  │ Foundry IQ             │  │
 │  │  • Work IQ knowledge  │──┼────────────┼─▶│ knowledge base         │  │
 │  │    (Email, Teams,     │  │  POST      │  │  /knowledgebases/{kb}  │  │
 │  │    SharePoint, People)│  │  /retrieve │  │  /retrieve             │  │
@@ -29,9 +36,21 @@ Microsoft Entra directory A                Microsoft Entra directory B
                                            └──────────────────────────────┘
 ```
 
-* Questions about the user's own work (mail, chats, documents, people) are answered by Copilot's native Work IQ grounding - no extra infrastructure.
-* Questions about curated reference knowledge are routed to the `retrieveFoundryKnowledge` action, which posts the query to the knowledge base's agentic retrieval endpoint in the Azure tenant.
-* The Azure AI Search query API key is stored in the Teams Developer Portal key vault (`ApiKeyPluginVault`) during provisioning - it never appears in the manifest, the repo, or the client.
+An escalation flows through the agent in three steps, encoded in its instructions:
+
+1. **Gather customer context** from the engineer's Microsoft 365 work data (Work IQ): who reported the issue, symptoms, what was tried, severity.
+2. **Search the product knowledge base** (Foundry IQ) with a standalone technical query - product terminology only, no customer names or ticket numbers cross the boundary.
+3. **Synthesize**: match symptoms to known issues and fixes, recommend next steps, and optionally draft a customer-ready reply - with every finding labeled by its source.
+
+## How this differs from existing samples
+
+At the time of writing there is no sample - in this repository or in the official galleries - that combines both IQs in one agent:
+
+* [microsoft/work-iq](https://github.com/microsoft/work-iq) ships an MCP server and CLI for Work IQ, aimed at IDE and custom clients - not a Microsoft 365 Copilot agent.
+* [Copilot Developer Camp](https://microsoft.github.io/copilot-camp/) covers Work IQ APIs in custom engine agent labs (your own code and hosting) - a declarative agent needs none of that, because it gets Work IQ grounding natively.
+* Foundry IQ samples and notebooks target Foundry Agent Service agents inside the same Azure tenant.
+
+This sample is the missing combination - and it deliberately tackles the awkward deployment reality (two directories) that real organizations hit first.
 
 ## Frameworks
 
@@ -62,7 +81,7 @@ Version|Date|Author|Comments
 ### Step 1 - Create the Foundry IQ knowledge base (directory B, Azure)
 
 1. Sign in to the [Azure portal](https://portal.azure.com) with your **Azure tenant** account and create (or reuse) an **Azure AI Search** service, Basic tier or higher.
-1. Create a knowledge base with at least one knowledge source (for example a blob container of product documentation, or an existing search index). You can do this in the [Microsoft Foundry portal](https://ai.azure.com) or by following [Create a knowledge base in Azure AI Search](https://learn.microsoft.com/azure/search/agentic-retrieval-how-to-create-knowledge-base). Note the **knowledge base name**.
+1. Create a knowledge base with at least one knowledge source - for this scenario, a blob container holding product documentation: known-issue articles, release notes, troubleshooting guides. You can do this in the [Microsoft Foundry portal](https://ai.azure.com) or by following [Create a knowledge base in Azure AI Search](https://learn.microsoft.com/azure/search/agentic-retrieval-how-to-create-knowledge-base). Note the **knowledge base name**.
 1. In the search service, go to **Settings > Keys** and:
     * make sure **API access control** allows API keys (**Both** or **API keys**), and
     * copy a **query key** (query keys are read-only; avoid admin keys).
@@ -71,7 +90,7 @@ Version|Date|Author|Comments
 
 1. Clone this repository and open the `samples/da-foundry-work-iq` folder.
 1. In `env/.env.dev` set:
-    * `FOUNDRY_IQ_SEARCH_ENDPOINT` - your search service URL, for example `https://contoso-search.search.windows.net`
+    * `FOUNDRY_IQ_SEARCH_ENDPOINT` - your search service URL, for example `https://fabrikam-search.search.windows.net`
     * `FOUNDRY_IQ_KNOWLEDGE_BASE_NAME` - the knowledge base name from step 1
 
 ### Step 3 - Provision to the Copilot tenant (directory A, Microsoft 365)
@@ -90,17 +109,18 @@ Version|Date|Author|Comments
 
     During provisioning the `apiKey/register` step prompts for an API key - paste the **Azure AI Search query key** from step 1. The key is stored in the Teams Developer Portal vault and only its registration ID is written to `env/.env.dev`.
 
-1. Open [Microsoft 365 Copilot](https://m365.cloud.microsoft/chat), select **IQ Bridge** from the agent list, and try the conversation starters.
+1. Open [Microsoft 365 Copilot](https://m365.cloud.microsoft/chat), select **Escalation Assist** from the agent list, and try the conversation starters - for example: *"A customer emailed me about their sync client failing after the latest update. Gather the email thread and check the product knowledge base for known issues and fixes."*
 
 ## Features
 
 This sample illustrates the following concepts:
 
+* A **real post-merger/two-directory scenario**: customer context in the Microsoft 365 Copilot tenant, product knowledge in a separate Azure tenant
 * Building a declarative agent that combines **Work IQ knowledge capabilities** (`Email`, `TeamsMessages`, `OneDriveAndSharePoint`, `People`) with a custom **API plugin action**
 * Calling the **Foundry IQ / Azure AI Search agentic retrieval** REST endpoint (`POST /knowledgebases/{name}/retrieve`, API version `2026-04-01`) from a Copilot action
-* **Cross-directory (cross-tenant) knowledge access**: the Copilot license and the Azure subscription live in different Microsoft Entra directories, bridged with an API key so no cross-tenant Entra configuration is required
+* **Cross-directory (cross-tenant) knowledge access** bridged with an API key, so no cross-tenant Entra configuration is required
 * Securing a plugin with **`ApiKeyPluginVault`** so the key is stored in the Microsoft token store instead of the manifest or source control
-* Instruction-based **routing between knowledge sources**, with source attribution in answers
+* An instruction-encoded **escalation workflow** (context → knowledge base → synthesis) with source attribution and a data-boundary rule: no customer names or ticket numbers are sent to the external knowledge base
 
 ### Notes and possible improvements
 

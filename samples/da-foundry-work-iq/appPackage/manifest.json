@@ -14,12 +14,12 @@
         "outline": "outline.png"
     },
     "name": {
-        "short": "IQ Bridge${{APP_NAME_SUFFIX}}",
-        "full": "IQ Bridge - Work IQ and Foundry IQ agent"
+        "short": "Escalation Assist${{APP_NAME_SUFFIX}}",
+        "full": "Escalation Assist - post-merger support agent with Work IQ and Foundry IQ"
     },
     "description": {
-        "short": "Answers from your Microsoft 365 work data and a Foundry IQ knowledge base",
-        "full": "IQ Bridge is a declarative agent for Microsoft 365 Copilot that answers questions from two knowledge systems: Work IQ, the intelligence layer over your Microsoft 365 work data (emails, Teams messages, SharePoint and OneDrive documents, and people), and Foundry IQ, a knowledge base hosted in Azure AI Search that can live in a different Microsoft Entra directory than your Microsoft 365 Copilot tenant."
+        "short": "Resolves customer escalations using work context and the product knowledge base",
+        "full": "Escalation Assist is a declarative agent for Microsoft 365 Copilot built for post-merger organizations. Support engineers resolve customer escalations by combining customer context from Work IQ, the intelligence layer over Microsoft 365 work data (emails, Teams messages, SharePoint and OneDrive documents, and people), with the acquired company's product engineering knowledge base powered by Foundry IQ on Azure AI Search, hosted in a different Microsoft Entra directory than the Microsoft 365 Copilot tenant."
     },
     "accentColor": "#FFFFFF",
     "composeExtensions": [],

@@ -1,8 +1,8 @@
 {
     "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.7/schema.json",
     "version": "v1.7",
-    "name": "IQ Bridge",
-    "description": "An agent that answers questions from your Microsoft 365 work data (Work IQ) and from a Foundry IQ knowledge base hosted in a different Microsoft Entra directory (Azure AI Search agentic retrieval).",
+    "name": "Escalation Assist",
+    "description": "A support escalation agent for post-merger organizations. Combines customer context from your Microsoft 365 work data (Work IQ) with the acquired company's product engineering knowledge base (Foundry IQ on Azure AI Search), hosted in a different Microsoft Entra directory.",
     "instructions": "$[file('instruction.txt')]",
     "capabilities": [
         {
@@ -23,20 +23,24 @@
     },
     "conversation_starters": [
         {
-            "title": "Ask the knowledge base",
-            "text": "Search the Foundry IQ knowledge base: what does our product documentation say about getting started?"
+            "title": "Prepare an escalation",
+            "text": "A customer emailed me about their sync client failing after the latest update. Gather the email thread and check the product knowledge base for known issues and fixes."
         },
         {
-            "title": "Catch up on work",
-            "text": "Summarize my unread emails and recent Teams messages from today"
+            "title": "Known issue lookup",
+            "text": "Search the product engineering knowledge base: is there a known issue with authentication timeouts in the gateway component?"
         },
         {
-            "title": "Find documents",
-            "text": "Find the latest documents shared with me on SharePoint about project planning"
+            "title": "Customer context",
+            "text": "Summarize all recent emails, Teams messages, and shared documents about the Northwind escalation"
         },
         {
-            "title": "Compare sources",
-            "text": "Check both my work documents and the Foundry IQ knowledge base for information about our onboarding process"
+            "title": "Draft a response",
+            "text": "Draft a reply to the customer combining what engineering's knowledge base says about this error with the history from my email thread"
+        },
+        {
+            "title": "Who can help",
+            "text": "Who in my organization has been involved in escalations about the reporting module?"
         }
     ],
     "actions": [
