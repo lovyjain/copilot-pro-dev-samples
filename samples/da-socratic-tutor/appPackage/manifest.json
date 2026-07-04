@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.25/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.25",
+  "version": "1.0.0",
+  "id": "${{TEAMS_APP_ID}}",
+  "developer": {
+    "name": "PnP Community",
+    "websiteUrl": "https://pnp.github.io/",
+    "privacyUrl": "https://pnp.github.io/privacy",
+    "termsOfUseUrl": "https://pnp.github.io/terms"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "Socratic Tutor ${{APP_NAME_SUFFIX}}",
+    "full": "Socratic Tutor"
+  },
+  "description": {
+    "short": "A teaching agent that uses Socratic questioning to guide learning.",
+    "full": "A teaching agent that uses Socratic questioning to guide learners through reflective inquiry instead of direct answers, helping build critical thinking and deep understanding."
+  },
+  "accentColor": "#FFFFFF",
+  "composeExtensions": [],
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
+  "copilotAgents": {
+    "declarativeAgents": [
+      {
+        "id": "declarativeAgent",
+        "file": "declarativeAgent.json"
+      }
+    ]
+  },
+  "validDomains": []
+}
