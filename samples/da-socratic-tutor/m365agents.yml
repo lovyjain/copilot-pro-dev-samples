@@ -1,0 +1,32 @@
+version: 1.0.0
+additionalMetadata:
+  sampleTag: pnp-copilot-pro-dev:da-socratic-tutor
+provision:
+  - uses: teamsApp/create
+    with:
+      name: Socratic Tutor${{APP_NAME_SUFFIX}}
+    writeToEnvironmentFile:
+      teamsAppId: TEAMS_APP_ID
+  - uses: copilot/declarativeAgent/create
+    with:
+      manifestPath: ./appPackage/declarativeAgent.json
+      name: Socratic Tutor
+    writeToEnvironmentFile:
+      agentId: M365_APP_ID
+      titleId: M365_TITLE_ID
+package:
+  - uses: teamsApp/validateManifest
+    with:
+      manifestPath: ./appPackage/manifest.json
+  - uses: teamsApp/zipAppPackage
+    with:
+      manifestPath: ./appPackage/manifest.json
+      outputZipPath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
+      outputJsonPath: ./appPackage/build/manifest.${{TEAMSFX_ENV}}.json
+  - uses: teamsApp/validateAppPackage
+    with:
+      appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
+publish:
+  - uses: teamsApp/update
+    with:
+      appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
