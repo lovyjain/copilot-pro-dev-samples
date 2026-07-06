@@ -1,9 +1,9 @@
 # TeamsFx files
 env/.env.*.user
-env/.env.local
 env/.env.dev
 .localConfigs
 appPackage/build
+devTools
 
 # dependencies
 node_modules/

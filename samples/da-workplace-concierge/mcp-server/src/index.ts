@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import express from "express";
 import cors from "cors";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
@@ -38,6 +41,18 @@ app.get("/mcp", (_req, res) => {
 
 app.delete("/mcp", (_req, res) => {
   res.status(405).json({ error: "Method not allowed. This server runs in stateless mode; use POST." });
+});
+
+// Local widget playground: renders the MCP Apps widgets against this server
+// with an emulated window.openai bridge so they can be exercised without a
+// Microsoft 365 tenant. Development aid only — remove or guard this route
+// before deploying the server to production.
+const playgroundHtml = readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), "playground.html"),
+  "utf8"
+);
+app.get("/playground", (_req, res) => {
+  res.type("html").send(playgroundHtml);
 });
 
 const port = Number(process.env.PORT ?? 3000);

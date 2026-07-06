@@ -64,6 +64,26 @@ Copy the tunnel URL, for example `https://<tunnel-id>.devtunnels.ms`.
 > [!NOTE]
 > If you change the tools on the server, open `.vscode/mcp.json`, point it at your server URL, select **Start**, and use the **ATK: Update Action with MCP** CodeLens to regenerate the function definitions in `appPackage/ai-plugin.json`.
 
+### Debug locally with F5
+
+The sample also ships a `local` environment (`m365agents.local.yml` + `env/.env.local`) that automates all of the above:
+
+* Open the sample folder in Visual Studio Code and press **F5** (or select **Run and Debug** > **Debug in Copilot (Edge)**)
+* The Agents Toolkit checks prerequisites, starts a dev tunnel for port 3000 (writing the tunnel origin to `MCP_TUNNEL_ENDPOINT` in `env/.env.local`; provisioning derives `MCP_SERVER_URL` from it), provisions a **Workplace Concierge local** copy of the agent, installs the server dependencies, and starts the MCP server with `npm run dev` (watch mode)
+* A browser opens on Microsoft 365 Copilot with the local agent selected
+
+> [!NOTE]
+> The declarative agent itself always runs in Microsoft 365 Copilot in the cloud — the Microsoft 365 Agents Playground doesn't support declarative agents. "Local" means the MCP server runs on your machine behind a dev tunnel, and a separate `local` copy of the agent is sideloaded into your tenant.
+
+### Local widget playground (no tenant needed)
+
+To iterate on the widgets without provisioning anything, the MCP server hosts a small playground:
+
+* Start the server (`npm run dev` or `npm start` in `mcp-server`)
+* Open [http://localhost:3000/playground](http://localhost:3000/playground)
+
+The playground loads the widget HTML through a real `resources/read` call, seeds it with a real tool call, and emulates the `window.openai` bridge — so clicking a desk on the map performs a real `book_desk` call against the server, and follow-up messages appear in the host bridge log. Use the pickers to switch widgets and light/dark theme. This page is a development aid only; remove or guard the `/playground` route before deploying the server to production.
+
 ### About the sample data and authentication
 
 The server keeps floors, desks, rooms, and bookings in memory and resets on restart. Because the server uses **anonymous authentication — which Microsoft 365 Copilot supports for development purposes only** — a fixed demo user (Alex Chen) stands in for the signed-in user. Before deploying anything like this to production:

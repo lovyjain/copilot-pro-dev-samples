@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workplace Concierge — local widget playground</title>
+<link rel="icon" href="data:,">
+<style>
+  :root { --bg:#f3f3f3; --fg:#1a1a1a; --card:#ffffff; --border:#d1d1d1; --accent:#0f6cbd; }
+  .dark { --bg:#141414; --fg:#f0f0f0; --card:#1f1f1f; --border:#3d3d3d; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--fg); font-size:14px; }
+  header { display:flex; align-items:center; gap:12px; padding:10px 16px; background:var(--card); border-bottom:1px solid var(--border); flex-wrap:wrap; }
+  header h1 { font-size:15px; margin:0 12px 0 0; }
+  header .note { color:#888; font-size:12px; flex-basis:100%; }
+  select, button { font:inherit; padding:5px 10px; border-radius:6px; border:1px solid var(--border); background:var(--card); color:var(--fg); cursor:pointer; }
+  main { display:grid; grid-template-columns: 1fr 340px; gap:12px; padding:12px 16px; align-items:start; }
+  @media (max-width: 800px) { main { grid-template-columns: 1fr; } }
+  #frame-wrap { background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  iframe { width:100%; height:640px; border:0; display:block; background:transparent; }
+  #log-panel { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:10px 12px; }
+  #log-panel h2 { font-size:13px; margin:0 0 8px; }
+  #log { font-family:ui-monospace,Consolas,monospace; font-size:11.5px; white-space:pre-wrap; word-break:break-word; max-height:560px; overflow-y:auto; margin:0; }
+  #log .evt { color:var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Widget playground</h1>
+  <label>Widget:
+    <select id="widget-select">
+      <option value="office-map">Office map</option>
+      <option value="my-bookings">My bookings</option>
+    </select>
+  </label>
+  <label>Theme:
+    <select id="theme-select">
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
+  </label>
+  <button id="reload-btn" type="button">Reload widget</button>
+  <span class="note">Local development aid only — renders the MCP Apps widgets against this server with an emulated <code>window.openai</code> bridge, no Microsoft 365 tenant needed. In Copilot the widgets render in a sandboxed iframe with the real host bridge.</span>
+</header>
+<main>
+  <div id="frame-wrap"><iframe id="widget-frame" title="Widget preview"></iframe></div>
+  <div id="log-panel">
+    <h2>Host bridge log</h2>
+    <pre id="log"></pre>
+  </div>
+</main>
+<script>
+(function () {
+  "use strict";
+
+  var MCP_URL = "/mcp";
+  var rpcId = 1;
+
+  var WIDGETS = {
+    "office-map": { uri: "ui://widget/office-map.html", seedTool: "get_office_map", seedArgs: {} },
+    "my-bookings": { uri: "ui://widget/my-bookings.html", seedTool: "get_my_bookings", seedArgs: {} },
+  };
+
+  function log(kind, detail) {
+    var pre = document.getElementById("log");
+    var line = document.createElement("span");
+    line.innerHTML = '<span class="evt">[' + new Date().toLocaleTimeString() + " " + kind + "]</span> " + detail + "\n";
+    pre.appendChild(line);
+    pre.scrollTop = pre.scrollHeight;
+  }
+
+  async function rpc(method, params) {
+    var res = await fetch(MCP_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json, text/event-stream",
+        "MCP-Protocol-Version": "2025-06-18",
+      },
+      body: JSON.stringify({ jsonrpc: "2.0", id: rpcId++, method: method, params: params }),
+    });
+    var raw = await res.text();
+    var m = raw.match(/data: (.*)/);
+    var payload = JSON.parse(m ? m[1] : raw);
+    if (payload.error) { throw new Error(payload.error.message || "MCP error"); }
+    return payload.result;
+  }
+
+  // The playground page acts as the widget host: it receives calls from the
+  // iframe via postMessage and proxies tool calls to the MCP server. This
+  // emulates the subset of window.openai the widgets use.
+  var pending = {};
+  window.addEventListener("message", async function (event) {
+    var msg = event.data || {};
+    var frame = document.getElementById("widget-frame");
+    if (msg.type === "playground:callTool") {
+      log("callTool", msg.name + " " + JSON.stringify(msg.args));
+      try {
+        var result = await rpc("tools/call", { name: msg.name, arguments: msg.args || {} });
+        frame.contentWindow.postMessage({ type: "playground:callToolResult", callId: msg.callId, result: result }, "*");
+      } catch (err) {
+        frame.contentWindow.postMessage({ type: "playground:callToolResult", callId: msg.callId, error: String(err) }, "*");
+      }
+    } else if (msg.type === "playground:sendFollowUpMessage") {
+      log("sendFollowUpMessage", JSON.stringify(msg.payload));
+    } else if (msg.type === "playground:requestDisplayMode") {
+      log("requestDisplayMode", JSON.stringify(msg.payload));
+    } else if (msg.type === "playground:notifyIntrinsicHeight") {
+      // resize the iframe to the widget's reported height (min 200px)
+      frame.style.height = Math.max(200, Number(msg.payload) || 0) + "px";
+    }
+  });
+
+  // Bridge script injected into the widget iframe. It implements window.openai
+  // on top of postMessage to the playground page.
+  function bridgeScript(toolOutput, theme) {
+    return "<scr" + "ipt>\n" +
+      "var __pending = {}; var __callId = 1;\n" +
+      "window.openai = {\n" +
+      "  theme: " + JSON.stringify(theme) + ",\n" +
+      "  toolOutput: " + JSON.stringify(toolOutput) + ",\n" +
+      "  callTool: function (name, args) {\n" +
+      "    return new Promise(function (resolve, reject) {\n" +
+      "      var id = __callId++;\n" +
+      "      __pending[id] = { resolve: resolve, reject: reject };\n" +
+      "      parent.postMessage({ type: 'playground:callTool', callId: id, name: name, args: args }, '*');\n" +
+      "    });\n" +
+      "  },\n" +
+      "  sendFollowUpMessage: function (p) { parent.postMessage({ type: 'playground:sendFollowUpMessage', payload: p }, '*'); },\n" +
+      "  requestDisplayMode: function (p) { parent.postMessage({ type: 'playground:requestDisplayMode', payload: p }, '*'); },\n" +
+      "  notifyIntrinsicHeight: function (h) { parent.postMessage({ type: 'playground:notifyIntrinsicHeight', payload: h }, '*'); },\n" +
+      "};\n" +
+      "window.addEventListener('message', function (event) {\n" +
+      "  var msg = event.data || {};\n" +
+      "  if (msg.type === 'playground:callToolResult') {\n" +
+      "    var p = __pending[msg.callId];\n" +
+      "    if (!p) { return; }\n" +
+      "    delete __pending[msg.callId];\n" +
+      "    if (msg.error) { p.reject(new Error(msg.error)); } else { p.resolve(msg.result); }\n" +
+      "  }\n" +
+      "});\n" +
+      "</scr" + "ipt>";
+  }
+
+  async function loadWidget() {
+    var choice = document.getElementById("widget-select").value;
+    var theme = document.getElementById("theme-select").value;
+    document.body.className = theme === "dark" ? "dark" : "";
+    var widget = WIDGETS[choice];
+    try {
+      log("host", "loading " + widget.uri);
+      var resource = await rpc("resources/read", { uri: widget.uri });
+      var html = resource.contents[0].text;
+      var seed = await rpc("tools/call", { name: widget.seedTool, arguments: widget.seedArgs });
+      log("host", "seeded with " + widget.seedTool + " (" + (seed.content && seed.content[0] ? seed.content[0].text.slice(0, 80) : "") + "…)");
+      var injected = html.replace("<body>", "<body>" + bridgeScript(seed.structuredContent, theme));
+      document.getElementById("widget-frame").srcdoc = injected;
+    } catch (err) {
+      log("error", String(err));
+    }
+  }
+
+  document.getElementById("widget-select").addEventListener("change", loadWidget);
+  document.getElementById("theme-select").addEventListener("change", loadWidget);
+  document.getElementById("reload-btn").addEventListener("click", loadWidget);
+  loadWidget();
+})();
+</script>
+</body>
+</html>
