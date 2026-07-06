@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My bookings</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #616161;
+    --card: #f5f5f5;
+    --border: #e0e0e0;
+    --accent: #0f6cbd;
+    --error: #c50f1f;
+    --ok: #107c10;
+  }
+  [data-theme="dark"] {
+    --bg: #1f1f1f;
+    --fg: #f0f0f0;
+    --muted: #a0a0a0;
+    --card: #2b2b2b;
+    --border: #3d3d3d;
+    --ok: #6bb700;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 12px;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 14px;
+  }
+  h2 { margin: 0 0 2px; font-size: 16px; font-weight: 600; }
+  .sub { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+  ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  li {
+    display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+    border: 1px solid var(--border); border-radius: 8px; background: var(--card);
+  }
+  .icon {
+    width: 34px; height: 34px; border-radius: 8px; flex: none;
+    display: flex; align-items: center; justify-content: center; font-size: 17px;
+    background: var(--bg); border: 1px solid var(--border);
+  }
+  .details { flex: 1; min-width: 0; }
+  .details .label { font-weight: 600; }
+  .details .when { color: var(--muted); font-size: 12px; }
+  button {
+    font: inherit; padding: 6px 12px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--bg); color: var(--error); cursor: pointer;
+  }
+  button:hover { border-color: var(--error); }
+  button:disabled { opacity: 0.6; cursor: wait; }
+  .status { margin-top: 10px; font-size: 13px; }
+  .status.ok { color: var(--ok); }
+  .status.error { color: var(--error); }
+  .empty { padding: 18px; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: 8px; }
+</style>
+</head>
+<body>
+<h2 id="title">My bookings</h2>
+<div class="sub" id="subtitle">Waiting for data&hellip;</div>
+<ul id="list"></ul>
+<div id="status" class="status" role="status"></div>
+<script>
+(function () {
+  "use strict";
+
+  // window.openai is injected by the host; feature-detect everything so the
+  // widget degrades gracefully outside Copilot or on limited hosts.
+  var oai = window.openai;
+  var canCallTool = !!(oai && typeof oai.callTool === "function");
+  var busy = false;
+
+  function el(id) { return document.getElementById(id); }
+
+  function applyTheme() {
+    document.body.dataset.theme = oai && oai.theme === "dark" ? "dark" : "light";
+  }
+
+  function setStatus(text, kind) {
+    var status = el("status");
+    status.textContent = text || "";
+    status.className = "status" + (kind ? " " + kind : "");
+  }
+
+  function formatWhen(booking) {
+    var when = booking.date;
+    if (booking.start && booking.end) { when += " · " + booking.start + "–" + booking.end; }
+    if (booking.title) { when += " · " + booking.title; }
+    return when + " · Floor " + booking.floor;
+  }
+
+  function render(data) {
+    if (!data || !Array.isArray(data.bookings)) { return; }
+    el("title").textContent = (data.userName ? data.userName + "'s" : "My") + " bookings";
+    el("subtitle").textContent = data.bookings.length
+      ? data.bookings.length + " upcoming booking(s)"
+      : "Nothing booked yet";
+
+    var list = el("list");
+    list.innerHTML = "";
+    if (!data.bookings.length) {
+      var empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "No upcoming bookings. Ask Copilot to show the office map to book a desk.";
+      list.appendChild(empty);
+      notifyHeight();
+      return;
+    }
+
+    data.bookings.forEach(function (booking) {
+      var item = document.createElement("li");
+
+      var icon = document.createElement("span");
+      icon.className = "icon";
+      icon.textContent = booking.type === "room" ? "📅" : "💺";
+      item.appendChild(icon);
+
+      var details = document.createElement("div");
+      details.className = "details";
+      var label = document.createElement("div");
+      label.className = "label";
+      label.textContent = booking.label;
+      var when = document.createElement("div");
+      when.className = "when";
+      when.textContent = formatWhen(booking);
+      details.appendChild(label);
+      details.appendChild(when);
+      item.appendChild(details);
+
+      if (canCallTool) {
+        var cancelBtn = document.createElement("button");
+        cancelBtn.type = "button";
+        cancelBtn.textContent = "Cancel";
+        cancelBtn.addEventListener("click", function () { cancel(booking, cancelBtn); });
+        item.appendChild(cancelBtn);
+      }
+
+      list.appendChild(item);
+    });
+    notifyHeight();
+  }
+
+  async function cancel(booking, button) {
+    if (!canCallTool || busy) { return; }
+    busy = true;
+    button.disabled = true;
+    button.textContent = "Cancelling…";
+    setStatus("");
+    try {
+      var result = await oai.callTool("cancel_booking", { bookingId: booking.id });
+      var out = result && result.structuredContent;
+      if (out && Array.isArray(out.bookings)) { render(out); }
+      if (out && out.success) {
+        setStatus("✅ " + out.message, "ok");
+      } else {
+        setStatus((out && out.message) || "Cancellation failed.", "error");
+        button.disabled = false;
+        button.textContent = "Cancel";
+      }
+    } catch (err) {
+      setStatus("Something went wrong: " + (err && err.message ? err.message : err), "error");
+      button.disabled = false;
+      button.textContent = "Cancel";
+    } finally {
+      busy = false;
+    }
+  }
+
+  function notifyHeight() {
+    if (oai && typeof oai.notifyIntrinsicHeight === "function") {
+      oai.notifyIntrinsicHeight(document.documentElement.scrollHeight);
+    }
+  }
+
+  window.addEventListener("openai:set_globals", function () {
+    oai = window.openai;
+    applyTheme();
+    if (oai && oai.toolOutput) { render(oai.toolOutput); }
+  });
+
+  applyTheme();
+  if (oai && oai.toolOutput) {
+    render(oai.toolOutput);
+  } else {
+    el("subtitle").textContent = "Open this widget from Microsoft 365 Copilot to see live data.";
+  }
+})();
+</script>
+</body>
+</html>

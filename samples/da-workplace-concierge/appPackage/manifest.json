@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.28/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.28",
+  "id": "${{TEAMS_APP_ID}}",
+  "version": "1.0.0",
+  "developer": {
+    "name": "Teams App, Inc.",
+    "websiteUrl": "https://www.example.com",
+    "privacyUrl": "https://www.example.com/privacy",
+    "termsOfUseUrl": "https://www.example.com/termsofuse"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "Workplace Concierge${{APP_NAME_SUFFIX}}",
+    "full": "Workplace Concierge - desk and room booking with interactive widgets"
+  },
+  "description": {
+    "short": "Find and book desks and meeting rooms with an interactive office map.",
+    "full": "A declarative agent that helps employees find and book desks and meeting rooms, see who is in the office, and manage their bookings. Its MCP server renders interactive seat-map and bookings widgets inline in Microsoft 365 Copilot chat using MCP Apps."
+  },
+  "accentColor": "#0F6CBD",
+  "copilotAgents": {
+    "declarativeAgents": [
+      {
+        "id": "declarativeAgent",
+        "file": "declarativeAgent.json"
+      }
+    ]
+  },
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
+  "validDomains": []
+}

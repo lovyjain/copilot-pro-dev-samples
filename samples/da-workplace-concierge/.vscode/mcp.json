@@ -1,0 +1,12 @@
+{
+  "servers": {
+    // This is the MCP server configuration file for VS Code to use.
+    // Click on Start button to fetch tools from your server.
+    // Then, click the "ATK: Update Action with MCP" button from CodeLens to select the wanted tools from the prompt list.
+    // Replace the URL with your dev tunnel URL (https://<tunnel-id>.devtunnels.ms/mcp) to fetch tools through the tunnel.
+    "workplace-concierge": {
+      "url": "http://localhost:3000/mcp",
+      "type": "http"
+    }
+  }
+}

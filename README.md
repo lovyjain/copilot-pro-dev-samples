@@ -91,6 +91,7 @@ This repository contains [Microsoft 365 Copilot](https://learn.microsoft.com/mic
 | [Trey Research TypeSpec](./samples/da-typespec-trey-research) | This sample demonstrates how to create an agent that interacts with a consulting API to provide information about consultants and projects. | Bob German, Rabia Williams |
 | [Invoking Power Automate Agent using TypeSpec for Microsoft 365 Copilot](./samples/da-typespec-powerautomate) | A declarative agent that triggers a Power Automate flow using TypeSpec and OAuth 2 authentication. | Reshmee Auckloo |
 | [Visual Mind agent Visualizer Assistant](./samples/da-visual-mind-agent) | The Visual Mind agent is a Visualizer Assistant that will help the user with tasks related to creating clear, structured, and engaging visuals using Mermaid.js code. | Mohammad Amer |
+| [Workplace Concierge - desk & room booking with MCP Apps widgets](./samples/da-workplace-concierge) | A declarative agent for desk and meeting room booking whose MCP server renders interactive seat-map and bookings widgets inline in Copilot chat using MCP Apps | Lovy Jain |
 | [Writing Coach Declarative Agent for Microsoft 365 Copilot Sample](./samples/da-WritingCoach) | First Party Declarative Agent Writing Coach shared as a sample | Phi-Lay NGUYEN |<!-- end_sample_list -->
 
 </details>

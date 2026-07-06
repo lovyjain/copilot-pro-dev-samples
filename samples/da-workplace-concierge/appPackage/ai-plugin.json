@@ -1,0 +1,100 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.4/schema.json",
+  "schema_version": "v2.4",
+  "name_for_human": "Workplace Concierge",
+  "description_for_human": "Find and book desks and meeting rooms with an interactive office map.",
+  "contact_email": "publisher-email@example.com",
+  "namespace": "workplaceconcierge",
+  "functions": [
+    {
+      "name": "get_office_map",
+      "description": "Shows an interactive seat map of an office floor for a given date, with desk and meeting room availability.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "floor": {
+            "type": "integer",
+            "description": "Floor number (1 or 2). Defaults to 1."
+          },
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD format. Defaults to today."
+          }
+        }
+      }
+    },
+    {
+      "name": "book_desk",
+      "description": "Books a desk for the current user on a given date.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "deskId": {
+            "type": "string",
+            "description": "The desk identifier, for example desk-1-04."
+          },
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD format. Defaults to today."
+          }
+        },
+        "required": [
+          "deskId"
+        ]
+      }
+    },
+    {
+      "name": "get_my_bookings",
+      "description": "Lists the current user's upcoming desk and meeting room bookings.",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "cancel_booking",
+      "description": "Cancels one of the current user's bookings by id.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "string",
+            "description": "The booking id to cancel, for example bk-0007."
+          }
+        },
+        "required": [
+          "bookingId"
+        ]
+      }
+    },
+    {
+      "name": "who_is_in_office",
+      "description": "Lists colleagues with a desk booked on a given date.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD format. Defaults to today."
+          }
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "RemoteMCPServer",
+      "spec": {
+        "url": "${{MCP_SERVER_URL}}",
+        "enable_dynamic_discovery": false
+      },
+      "run_for_functions": [
+        "get_office_map",
+        "book_desk",
+        "get_my_bookings",
+        "cancel_booking",
+        "who_is_in_office"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.7/schema.json",
+  "version": "v1.7",
+  "name": "Workplace Concierge",
+  "description": "Helps employees find and book desks and meeting rooms, see who is in the office, and manage their bookings using an interactive office map.",
+  "instructions": "$[file('instruction.md')]",
+  "conversation_starters": [
+    {
+      "title": "Book a desk",
+      "text": "Show me the office map for tomorrow so I can book a desk"
+    },
+    {
+      "title": "My bookings",
+      "text": "Show my upcoming desk and room bookings"
+    },
+    {
+      "title": "Who's in?",
+      "text": "Who is in the office today?"
+    },
+    {
+      "title": "Second floor",
+      "text": "Show me the seat map for floor 2"
+    }
+  ],
+  "actions": [
+    {
+      "id": "workplaceConcierge",
+      "file": "ai-plugin.json"
+    }
+  ]
+}
