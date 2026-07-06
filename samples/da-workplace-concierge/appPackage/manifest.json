@@ -21,7 +21,7 @@
     "short": "Find and book desks and meeting rooms with an interactive office map.",
     "full": "A declarative agent that helps employees find and book desks and meeting rooms, see who is in the office, and manage their bookings. Its MCP server renders interactive seat-map and bookings widgets inline in Microsoft 365 Copilot chat using MCP Apps."
   },
-  "accentColor": "#0F6CBD",
+  "accentColor": "#FFFFFF",
   "copilotAgents": {
     "declarativeAgents": [
       {
