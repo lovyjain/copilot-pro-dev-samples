@@ -62,7 +62,7 @@ Copy the tunnel URL, for example `https://<tunnel-id>.devtunnels.ms`.
 * Select an available (green) desk on the map to book it, then watch the widget hand the confirmation back to the agent
 
 > [!NOTE]
-> If you change the tools on the server, open `.vscode/mcp.json`, point it at your server URL, select **Start**, and use the **ATK: Update Action with MCP** CodeLens to regenerate the function definitions in `appPackage/ai-plugin.json`.
+> The widget wiring lives in `appPackage/mcp-tools.json`: it mirrors the server's `tools/list` response, including each tool's `_meta["openai/outputTemplate"]` that links it to a UI widget. Copilot reads the tool descriptions from this file (referenced by `mcp_tool_description` in `ai-plugin.json`), so **if you change the tools on the server you must regenerate it** — either use the **ATK: Update Action with MCP** CodeLens in `.vscode/mcp.json` (which also updates the `functions` in `ai-plugin.json`), or dump the server's `tools/list` result into the file manually. If the file is missing or stale, tool calls still work but the widgets won't render.
 
 ### Debug locally with F5
 

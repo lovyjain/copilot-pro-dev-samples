@@ -86,7 +86,9 @@
       "type": "RemoteMCPServer",
       "spec": {
         "url": "${{MCP_SERVER_URL}}",
-        "enable_dynamic_discovery": false
+        "mcp_tool_description": {
+          "file": "mcp-tools.json"
+        }
       },
       "run_for_functions": [
         "get_office_map",
