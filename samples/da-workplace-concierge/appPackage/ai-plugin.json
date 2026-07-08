@@ -114,7 +114,14 @@
                 "readOnlyHint": true
               },
               "_meta": {
-                "openai/outputTemplate": "ui://widget/office-map.html"
+                "openai/outputTemplate": "ui://widget/office-map.html",
+                "openai/widgetAccessible": true,
+                "ui": {
+                  "visibility": [
+                    "model",
+                    "app"
+                  ]
+                }
               }
             },
             {
@@ -141,7 +148,14 @@
                 "$schema": "http://json-schema.org/draft-07/schema#"
               },
               "_meta": {
-                "openai/outputTemplate": "ui://widget/office-map.html"
+                "openai/outputTemplate": "ui://widget/office-map.html",
+                "openai/widgetAccessible": true,
+                "ui": {
+                  "visibility": [
+                    "model",
+                    "app"
+                  ]
+                }
               }
             },
             {
@@ -157,7 +171,14 @@
                 "readOnlyHint": true
               },
               "_meta": {
-                "openai/outputTemplate": "ui://widget/my-bookings.html"
+                "openai/outputTemplate": "ui://widget/my-bookings.html",
+                "openai/widgetAccessible": true,
+                "ui": {
+                  "visibility": [
+                    "model",
+                    "app"
+                  ]
+                }
               }
             },
             {
@@ -179,7 +200,14 @@
                 "$schema": "http://json-schema.org/draft-07/schema#"
               },
               "_meta": {
-                "openai/outputTemplate": "ui://widget/my-bookings.html"
+                "openai/outputTemplate": "ui://widget/my-bookings.html",
+                "openai/widgetAccessible": true,
+                "ui": {
+                  "visibility": [
+                    "model",
+                    "app"
+                  ]
+                }
               }
             },
             {

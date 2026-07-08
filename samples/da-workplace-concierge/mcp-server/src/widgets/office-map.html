@@ -223,13 +223,24 @@
     el("confirm-btn").addEventListener("click", function () { bookDesk(desk); });
   }
 
+  // Some hosts never settle a rejected/blocked callTool promise; the watchdog
+  // keeps the widget usable instead of showing "Booking…" forever.
+  function withTimeout(promise, ms) {
+    return Promise.race([
+      promise,
+      new Promise(function (_resolve, reject) {
+        setTimeout(function () { reject(new Error("The request timed out. Please try again.")); }, ms);
+      }),
+    ]);
+  }
+
   async function bookDesk(desk) {
     if (!canCallTool() || busy) { return; }
     busy = true;
     var btn = el("confirm-btn");
     if (btn) { btn.disabled = true; btn.textContent = "Booking…"; }
     try {
-      var result = await oai.callTool("book_desk", { deskId: desk.id, date: current.date });
+      var result = await withTimeout(oai.callTool("book_desk", { deskId: desk.id, date: current.date }), 30000);
       var out = result && result.structuredContent;
       if (out && out.success) {
         render(out);

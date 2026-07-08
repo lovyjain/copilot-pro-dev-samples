@@ -14,6 +14,15 @@ import {
 const OFFICE_MAP_WIDGET_URI = "ui://widget/office-map.html";
 const MY_BOOKINGS_WIDGET_URI = "ui://widget/my-bookings.html";
 
+// Tools the widgets invoke through window.openai.callTool must be visible to
+// the app (widget) as well as the model, or the host won't execute
+// widget-initiated calls. "openai/widgetAccessible" is the OpenAI Apps SDK
+// marker; "ui"."visibility" is the MCP Apps equivalent Copilot supports.
+const WIDGET_CALLABLE = {
+  "openai/widgetAccessible": true,
+  ui: { visibility: ["model", "app"] },
+};
+
 const floorParam = z
   .number()
   .int()
@@ -45,7 +54,7 @@ export function registerTools(server: McpServer): void {
         "Shows an interactive seat map of an office floor for a given date, with desk and meeting room availability.",
       inputSchema: { floor: floorParam, date: dateParam },
       annotations: { readOnlyHint: true },
-      _meta: { "openai/outputTemplate": OFFICE_MAP_WIDGET_URI },
+      _meta: { "openai/outputTemplate": OFFICE_MAP_WIDGET_URI, ...WIDGET_CALLABLE },
     },
     async ({ floor, date }) => {
       const map = getOfficeMap(floor ?? 1, date ?? todayIso());
@@ -70,7 +79,7 @@ export function registerTools(server: McpServer): void {
         deskId: z.string().describe("The desk identifier, for example desk-1-04."),
         date: dateParam,
       },
-      _meta: { "openai/outputTemplate": OFFICE_MAP_WIDGET_URI },
+      _meta: { "openai/outputTemplate": OFFICE_MAP_WIDGET_URI, ...WIDGET_CALLABLE },
     },
     async ({ deskId, date }) => {
       const bookingDate = date ?? todayIso();
@@ -90,7 +99,7 @@ export function registerTools(server: McpServer): void {
       description: "Lists the current user's upcoming desk and meeting room bookings.",
       inputSchema: {},
       annotations: { readOnlyHint: true },
-      _meta: { "openai/outputTemplate": MY_BOOKINGS_WIDGET_URI },
+      _meta: { "openai/outputTemplate": MY_BOOKINGS_WIDGET_URI, ...WIDGET_CALLABLE },
     },
     async () => {
       const payload = myBookingsPayload();
@@ -114,7 +123,7 @@ export function registerTools(server: McpServer): void {
       inputSchema: {
         bookingId: z.string().describe("The booking id to cancel, for example bk-0007."),
       },
-      _meta: { "openai/outputTemplate": MY_BOOKINGS_WIDGET_URI },
+      _meta: { "openai/outputTemplate": MY_BOOKINGS_WIDGET_URI, ...WIDGET_CALLABLE },
     },
     async ({ bookingId }) => {
       const result = cancelBooking(bookingId, CURRENT_USER_ID);

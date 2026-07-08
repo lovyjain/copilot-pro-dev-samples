@@ -25,6 +25,12 @@ app.use(
 // affinity issues behind dev tunnels. Booking state still persists across
 // requests because the data module is a process-wide singleton.
 app.post("/mcp", async (req, res) => {
+  // Lightweight request log so widget-initiated calls are visible during
+  // development (helps tell "call never reached the server" from "call
+  // failed on the server").
+  const method = req.body?.method ?? "?";
+  const toolName = req.body?.params?.name;
+  console.log(`[mcp] ${method}${toolName ? ` ${toolName}` : ""}`);
   const server = createServer();
   const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
   res.on("close", () => {

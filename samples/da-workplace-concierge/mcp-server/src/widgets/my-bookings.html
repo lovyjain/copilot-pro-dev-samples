@@ -145,6 +145,17 @@
     notifyHeight();
   }
 
+  // Some hosts never settle a rejected/blocked callTool promise; the watchdog
+  // keeps the widget usable instead of showing "Cancelling…" forever.
+  function withTimeout(promise, ms) {
+    return Promise.race([
+      promise,
+      new Promise(function (_resolve, reject) {
+        setTimeout(function () { reject(new Error("The request timed out. Please try again.")); }, ms);
+      }),
+    ]);
+  }
+
   async function cancel(booking, button) {
     if (!canCallTool() || busy) { return; }
     busy = true;
@@ -152,7 +163,7 @@
     button.textContent = "Cancelling…";
     setStatus("");
     try {
-      var result = await oai.callTool("cancel_booking", { bookingId: booking.id });
+      var result = await withTimeout(oai.callTool("cancel_booking", { bookingId: booking.id }), 30000);
       var out = result && result.structuredContent;
       if (out && Array.isArray(out.bookings)) { render(out); }
       if (out && out.success) {
