@@ -64,9 +64,31 @@
   function log(kind, detail) {
     var pre = document.getElementById("log");
     var line = document.createElement("span");
-    line.innerHTML = '<span class="evt">[' + new Date().toLocaleTimeString() + " " + kind + "]</span> " + detail + "\n";
+    var evt = document.createElement("span");
+    evt.className = "evt";
+    evt.textContent = "[" + new Date().toLocaleTimeString() + " " + kind + "]";
+    line.appendChild(evt);
+    line.appendChild(document.createTextNode(" " + detail + "\n"));
     pre.appendChild(line);
     pre.scrollTop = pre.scrollHeight;
+  }
+
+  // The Streamable HTTP transport answers with an SSE stream that may carry
+  // several events (notifications before the response). Use the last data
+  // line that parses to a JSON-RPC result or error; fall back to a plain
+  // JSON body.
+  function parseMcpResponse(raw) {
+    var payload = null;
+    var lines = raw.split(/\r?\n/);
+    for (var i = 0; i < lines.length; i++) {
+      if (lines[i].indexOf("data:") === 0) {
+        try {
+          var candidate = JSON.parse(lines[i].slice(5).trim());
+          if (candidate && (candidate.result !== undefined || candidate.error)) { payload = candidate; }
+        } catch (err) { /* not a JSON data line; keep scanning */ }
+      }
+    }
+    return payload || JSON.parse(raw);
   }
 
   async function rpc(method, params) {
@@ -79,11 +101,15 @@
       },
       body: JSON.stringify({ jsonrpc: "2.0", id: rpcId++, method: method, params: params }),
     });
-    var raw = await res.text();
-    var m = raw.match(/data: (.*)/);
-    var payload = JSON.parse(m ? m[1] : raw);
+    var payload = parseMcpResponse(await res.text());
     if (payload.error) { throw new Error(payload.error.message || "MCP error"); }
     return payload.result;
+  }
+
+  // JSON destined for an inline <script> must not contain "<" sequences that
+  // could close the script tag or open a comment.
+  function jsonForScript(value) {
+    return JSON.stringify(value).replace(/</g, "\\u003c");
   }
 
   // The playground page acts as the widget host: it receives calls from the
@@ -117,8 +143,8 @@
     return "<scr" + "ipt>\n" +
       "var __pending = {}; var __callId = 1;\n" +
       "window.openai = {\n" +
-      "  theme: " + JSON.stringify(theme) + ",\n" +
-      "  toolOutput: " + JSON.stringify(toolOutput) + ",\n" +
+      "  theme: " + jsonForScript(theme) + ",\n" +
+      "  toolOutput: " + jsonForScript(toolOutput) + ",\n" +
       "  callTool: function (name, args) {\n" +
       "    return new Promise(function (resolve, reject) {\n" +
       "      var id = __callId++;\n" +
@@ -153,7 +179,9 @@
       var html = resource.contents[0].text;
       var seed = await rpc("tools/call", { name: widget.seedTool, arguments: widget.seedArgs });
       log("host", "seeded with " + widget.seedTool + " (" + (seed.content && seed.content[0] ? seed.content[0].text.slice(0, 80) : "") + "…)");
-      var injected = html.replace("<body>", "<body>" + bridgeScript(seed.structuredContent, theme));
+      var injected = html.replace(/<body([^>]*)>/, function (bodyTag) {
+        return bodyTag + bridgeScript(seed.structuredContent, theme);
+      });
       document.getElementById("widget-frame").srcdoc = injected;
     } catch (err) {
       log("error", String(err));

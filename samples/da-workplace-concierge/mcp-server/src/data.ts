@@ -94,9 +94,13 @@ const rooms: Room[] = [
 ];
 
 function isoDate(offsetDays: number): string {
+  // Build from local date components: toISOString() would return the UTC
+  // date, which is off by one around midnight in non-UTC timezones.
   const d = new Date();
   d.setDate(d.getDate() + offsetDays);
-  return d.toISOString().slice(0, 10);
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${month}-${day}`;
 }
 
 export function todayIso(): string {
@@ -197,6 +201,9 @@ export function getOfficeMap(floor: number, date: string): OfficeMap {
 export interface BookDeskResult {
   success: boolean;
   message: string;
+  // Floor of the requested desk when it exists, so callers can render the
+  // right floor's map without parsing desk ids.
+  floor?: number;
   booking?: { id: string; deskId: string; deskLabel: string; floor: number; date: string; userId: string };
 }
 
@@ -211,6 +218,7 @@ export function bookDesk(deskId: string, date: string, userId: string): BookDesk
   if (conflict) {
     return {
       success: false,
+      floor: desk.floor,
       message: `Desk ${desk.label} is already booked by ${employeeName(conflict.userId)} on ${date}.`,
     };
   }
@@ -221,6 +229,7 @@ export function bookDesk(deskId: string, date: string, userId: string): BookDesk
     const existingDesk = deskById(existing.resourceId);
     return {
       success: false,
+      floor: desk.floor,
       message: `You already have desk ${existingDesk?.label ?? existing.resourceId} booked on ${date}. Cancel it first to switch desks.`,
     };
   }
@@ -228,6 +237,7 @@ export function bookDesk(deskId: string, date: string, userId: string): BookDesk
   bookings.push(booking);
   return {
     success: true,
+    floor: desk.floor,
     message: `Desk ${desk.label} on floor ${desk.floor} booked for ${date}.`,
     booking: { id: booking.id, deskId, deskLabel: desk.label, floor: desk.floor, date, userId },
   };

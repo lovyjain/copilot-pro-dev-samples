@@ -45,15 +45,17 @@ app.delete("/mcp", (_req, res) => {
 
 // Local widget playground: renders the MCP Apps widgets against this server
 // with an emulated window.openai bridge so they can be exercised without a
-// Microsoft 365 tenant. Development aid only — remove or guard this route
-// before deploying the server to production.
-const playgroundHtml = readFileSync(
-  join(dirname(fileURLToPath(import.meta.url)), "playground.html"),
-  "utf8"
-);
-app.get("/playground", (_req, res) => {
-  res.type("html").send(playgroundHtml);
-});
+// Microsoft 365 tenant. Development aid only — the route is not registered
+// when NODE_ENV is "production" so it can't leak into a real deployment.
+if (process.env.NODE_ENV !== "production") {
+  const playgroundHtml = readFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), "playground.html"),
+    "utf8"
+  );
+  app.get("/playground", (_req, res) => {
+    res.type("html").send(playgroundHtml);
+  });
+}
 
 const port = Number(process.env.PORT ?? 3000);
 app.listen(port, () => {

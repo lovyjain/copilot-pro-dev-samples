@@ -68,10 +68,11 @@
 (function () {
   "use strict";
 
-  // window.openai is injected by the host; feature-detect everything so the
-  // widget degrades gracefully outside Copilot or on limited hosts.
+  // window.openai is injected by the host. It may be undefined when the script
+  // first runs (some hosts inject it later and announce it via the
+  // openai:set_globals event), so capabilities are re-evaluated at every use.
   var oai = window.openai;
-  var canCallTool = !!(oai && typeof oai.callTool === "function");
+  function canCallTool() { return !!(oai && typeof oai.callTool === "function"); }
   var busy = false;
 
   function el(id) { return document.getElementById(id); }
@@ -131,7 +132,7 @@
       details.appendChild(when);
       item.appendChild(details);
 
-      if (canCallTool) {
+      if (canCallTool()) {
         var cancelBtn = document.createElement("button");
         cancelBtn.type = "button";
         cancelBtn.textContent = "Cancel";
@@ -145,7 +146,7 @@
   }
 
   async function cancel(booking, button) {
-    if (!canCallTool || busy) { return; }
+    if (!canCallTool() || busy) { return; }
     busy = true;
     button.disabled = true;
     button.textContent = "Cancelling…";

@@ -90,13 +90,20 @@
 (function () {
   "use strict";
 
-  // window.openai is injected by the host. It is undefined when the file is
-  // opened outside Copilot, and individual APIs may be missing on some hosts,
-  // so every call is feature-detected.
+  // window.openai is injected by the host. It may be undefined when the script
+  // first runs (some hosts inject it later and announce it via the
+  // openai:set_globals event), and individual APIs may be missing on some
+  // hosts — so capabilities are re-evaluated at every use, never cached.
   var oai = window.openai;
-  var canCallTool = !!(oai && typeof oai.callTool === "function");
-  var canFollowUp = !!(oai && typeof oai.sendFollowUpMessage === "function");
-  var canFullscreen = !!(oai && typeof oai.requestDisplayMode === "function");
+  function canCallTool() { return !!(oai && typeof oai.callTool === "function"); }
+  function canFollowUp() { return !!(oai && typeof oai.sendFollowUpMessage === "function"); }
+  function canFullscreen() { return !!(oai && typeof oai.requestDisplayMode === "function"); }
+
+  function esc(value) {
+    return String(value).replace(/[&<>"']/g, function (ch) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch];
+    });
+  }
 
   var CELL = 56, GAP = 10, PAD = 8;
   var current = null;
@@ -124,10 +131,12 @@
     panel.innerHTML = html;
     panel.classList.toggle("error", !!isError);
     panel.classList.remove("hidden");
+    notifyHeight();
   }
 
   function hidePanel() {
     el("panel").classList.add("hidden");
+    notifyHeight();
   }
 
   function deskFill(desk) {
@@ -169,7 +178,7 @@
         ? "Desk " + desk.label + " (" + desk.zone + ") — available, click to book"
         : "Desk " + desk.label + " (" + desk.zone + ") — booked by " + (desk.bookedBy || "someone");
       group.appendChild(tooltip);
-      if (desk.status === "available" && canCallTool) {
+      if (desk.status === "available" && canCallTool()) {
         group.addEventListener("click", function () { confirmBooking(desk); });
       }
       svg.appendChild(group);
@@ -205,8 +214,8 @@
   function confirmBooking(desk) {
     if (busy) { return; }
     showPanel(
-      '<span class="msg">Book desk <strong>' + desk.label + "</strong> (" + desk.zone +
-      ") for <strong>" + current.date + "</strong>?</span>" +
+      '<span class="msg">Book desk <strong>' + esc(desk.label) + "</strong> (" + esc(desk.zone) +
+      ") for <strong>" + esc(current.date) + "</strong>?</span>" +
       '<button type="button" id="cancel-btn">Not now</button>' +
       '<button type="button" class="primary" id="confirm-btn">Book desk</button>'
     );
@@ -215,7 +224,7 @@
   }
 
   async function bookDesk(desk) {
-    if (!canCallTool || busy) { return; }
+    if (!canCallTool() || busy) { return; }
     busy = true;
     var btn = el("confirm-btn");
     if (btn) { btn.disabled = true; btn.textContent = "Booking…"; }
@@ -224,8 +233,8 @@
       var out = result && result.structuredContent;
       if (out && out.success) {
         render(out);
-        showPanel('<span class="msg">✅ ' + out.message + "</span>");
-        if (canFollowUp) {
+        showPanel('<span class="msg">✅ ' + esc(out.message) + "</span>");
+        if (canFollowUp()) {
           oai.sendFollowUpMessage({
             prompt: "I just booked desk " + out.booking.deskLabel + " on floor " +
               out.booking.floor + " for " + out.booking.date +
@@ -234,10 +243,10 @@
         }
       } else {
         if (out && Array.isArray(out.desks)) { render(out); }
-        showPanel('<span class="msg">' + ((out && out.message) || "Booking failed.") + "</span>", true);
+        showPanel('<span class="msg">' + esc((out && out.message) || "Booking failed.") + "</span>", true);
       }
     } catch (err) {
-      showPanel('<span class="msg">Something went wrong: ' + (err && err.message ? err.message : err) + "</span>", true);
+      showPanel('<span class="msg">Something went wrong: ' + esc(err && err.message ? err.message : err) + "</span>", true);
     } finally {
       busy = false;
     }
@@ -249,23 +258,26 @@
     }
   }
 
-  if (canFullscreen) {
-    var fsBtn = el("fullscreen-btn");
-    fsBtn.classList.remove("hidden");
-    fsBtn.addEventListener("click", function () {
-      oai.requestDisplayMode({ mode: "fullscreen" });
-    });
+  function syncFullscreenButton() {
+    el("fullscreen-btn").classList.toggle("hidden", !canFullscreen());
   }
 
+  el("fullscreen-btn").addEventListener("click", function () {
+    if (canFullscreen()) { oai.requestDisplayMode({ mode: "fullscreen" }); }
+  });
+
   // The host raises openai:set_globals when theme, displayMode, or toolOutput
-  // change (including the initial tool payload on some hosts).
+  // change (including the initial tool payload on some hosts, which may also
+  // be the first moment window.openai exists — hence the capability re-sync).
   window.addEventListener("openai:set_globals", function () {
     oai = window.openai;
     applyTheme();
+    syncFullscreenButton();
     if (oai && oai.toolOutput) { render(oai.toolOutput); }
   });
 
   applyTheme();
+  syncFullscreenButton();
   if (oai && oai.toolOutput) {
     render(oai.toolOutput);
   } else {

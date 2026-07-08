@@ -21,8 +21,11 @@ interface WidgetDefinition {
   uri: string;
   title: string;
   file: string;
+  html: string;
 }
 
+// The HTML is read once here at module load. registerWidgets runs per request
+// in stateless mode, so it must not touch the disk.
 const widgets: WidgetDefinition[] = [
   {
     name: "office-map-widget",
@@ -36,11 +39,14 @@ const widgets: WidgetDefinition[] = [
     title: "My bookings widget",
     file: "my-bookings.html",
   },
-];
+].map((widget) => ({
+  ...widget,
+  html: readFileSync(join(widgetsDir, widget.file), "utf8"),
+}));
 
 export function registerWidgets(server: McpServer): void {
   for (const widget of widgets) {
-    const html = readFileSync(join(widgetsDir, widget.file), "utf8");
+    const html = widget.html;
     server.registerResource(
       widget.name,
       widget.uri,

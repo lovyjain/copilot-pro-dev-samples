@@ -75,8 +75,7 @@ export function registerTools(server: McpServer): void {
     async ({ deskId, date }) => {
       const bookingDate = date ?? todayIso();
       const result = bookDesk(deskId, bookingDate, CURRENT_USER_ID);
-      const floor = result.booking?.floor ?? (Number(deskId.split("-")[1]) || 1);
-      const map = getOfficeMap(floor, bookingDate);
+      const map = getOfficeMap(result.floor ?? 1, bookingDate);
       return {
         content: [{ type: "text", text: result.message }],
         structuredContent: { ...result, ...map } as unknown as Record<string, unknown>,

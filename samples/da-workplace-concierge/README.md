@@ -68,6 +68,7 @@ Copy the tunnel URL, for example `https://<tunnel-id>.devtunnels.ms`.
 
 The sample also ships a `local` environment (`m365agents.local.yml` + `env/.env.local`) that automates all of the above:
 
+* Copy `env/.env.local.sample` to `env/.env.local` (the Agents Toolkit also creates it on first run; it's gitignored because provisioning writes your tenant's app IDs and tunnel URL into it)
 * Open the sample folder in Visual Studio Code and press **F5** (or select **Run and Debug** > **Debug in Copilot (Edge)**)
 * The Agents Toolkit checks prerequisites, starts a dev tunnel for port 3000 (writing the tunnel origin to `MCP_TUNNEL_ENDPOINT` in `env/.env.local`; provisioning derives `MCP_SERVER_URL` from it), provisions a **Workplace Concierge local** copy of the agent, installs the server dependencies, and starts the MCP server with `npm run dev` (watch mode)
 * A browser opens on Microsoft 365 Copilot with the local agent selected
@@ -82,7 +83,7 @@ To iterate on the widgets without provisioning anything, the MCP server hosts a 
 * Start the server (`npm run dev` or `npm start` in `mcp-server`)
 * Open [http://localhost:3000/playground](http://localhost:3000/playground)
 
-The playground loads the widget HTML through a real `resources/read` call, seeds it with a real tool call, and emulates the `window.openai` bridge — so clicking a desk on the map performs a real `book_desk` call against the server, and follow-up messages appear in the host bridge log. Use the pickers to switch widgets and light/dark theme. This page is a development aid only; remove or guard the `/playground` route before deploying the server to production.
+The playground loads the widget HTML through a real `resources/read` call, seeds it with a real tool call, and emulates the `window.openai` bridge — so clicking a desk on the map performs a real `book_desk` call against the server, and follow-up messages appear in the host bridge log. Use the pickers to switch widgets and light/dark theme. This page is a development aid only: the route is registered only when `NODE_ENV` is not set to `production`, so it stays out of real deployments. Keep in mind that while a dev tunnel is running, the playground (like the MCP endpoint itself) is reachable from the internet.
 
 ### About the sample data and authentication
 
