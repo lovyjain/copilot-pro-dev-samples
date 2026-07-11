@@ -7,10 +7,10 @@
     "url": "https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/da-workplace-concierge",
     "downloadUrl": "https://pnp.github.io/download-partial/?url=https://github.com/pnp/copilot-pro-dev-samples/tree/main/samples/da-workplace-concierge",
     "longDescription": [
-      "Workplace Concierge is a declarative agent for Microsoft 365 Copilot that helps employees find and book desks and meeting rooms, see who is in the office, and manage their bookings. Its action is a TypeScript MCP server that serves MCP Apps interactive UI widgets: Copilot renders a clickable office seat map and a bookings list inline in the chat. Users book a desk by selecting it on the map; the widgets call MCP tools directly from the UI and hand control back to the agent with follow-up messages. The sample demonstrates registering widget resources with the text/html+skybridge MIME type, linking tools to widgets with the openai/outputTemplate metadata field, returning structuredContent for widgets to render, and using the window.openai host bridge with feature detection, theming, and full-screen support."
+      "Workplace Concierge is a declarative agent for Microsoft 365 Copilot that helps employees find and book desks and meeting rooms, see who is in the office, and manage their bookings. Its action is a TypeScript MCP server that serves MCP Apps interactive UI widgets: Copilot renders a clickable office seat map and a bookings list inline in the chat. Users book a desk by selecting it on the map; the widgets call MCP tools directly from the UI, and the seat map hands control back to the agent with a follow-up message. The sample demonstrates registering widget resources with the text/html+skybridge MIME type, linking tools to widgets with the openai/outputTemplate metadata field, returning structuredContent for widgets to render, and using the window.openai host bridge with feature detection, theming, and full-screen support."
     ],
     "creationDateTime": "2026-07-06",
-    "updateDateTime": "2026-07-06",
+    "updateDateTime": "2026-07-11",
     "products": [
       "Microsoft 365 Copilot"
     ],

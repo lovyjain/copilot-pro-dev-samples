@@ -4,7 +4,7 @@
 
 Workplace Concierge is a declarative agent for Microsoft 365 Copilot that helps employees plan their days in the office: find and book a desk, check meeting room availability, see who is coming in, and manage bookings.
 
-What makes this sample different is *how* the agent answers. Its action is a remote MCP (Model Context Protocol) server that ships **MCP Apps interactive UI widgets**: instead of describing desk availability in text, Copilot renders a clickable office seat map inline in the chat. Users book a desk by selecting it on the map, and cancel bookings from an interactive list — the widgets call MCP tools directly from the UI and hand control back to the agent with follow-up messages.
+What makes this sample different is *how* the agent answers. Its action is a remote MCP (Model Context Protocol) server that ships **MCP Apps interactive UI widgets**: instead of describing desk availability in text, Copilot renders a clickable office seat map inline in the chat. Users book a desk by selecting it on the map, and cancel bookings from an interactive list — the widgets call MCP tools directly from the UI, and the seat map hands control back to the agent with a follow-up message.
 
 ![The office map widget rendered in Copilot](./assets/office-map-widget.png)
 
@@ -62,7 +62,7 @@ Copy the tunnel URL, for example `https://<tunnel-id>.devtunnels.ms`.
 * Select an available (green) desk on the map to book it, then watch the widget hand the confirmation back to the agent
 
 > [!NOTE]
-> The widget wiring lives in the `mcp_tool_description.tools` array inside `appPackage/ai-plugin.json`: it mirrors the server's `tools/list` response, including each tool's `_meta["openai/outputTemplate"]` that links it to a UI widget. Copilot reads the tool descriptions from the app package (not from the live server), so **if you change the tools on the server you must regenerate this array** — either use the **ATK: Update Action with MCP** CodeLens in `.vscode/mcp.json`, or dump the server's `tools/list` result into it manually. If the tool descriptions are missing or stale, tool calls still work but the widgets won't render. The tools are kept inline (rather than in a separate file referenced via `mcp_tool_description.file`) so that app packaging always includes them.
+> The widget wiring lives in the `mcp_tool_description.tools` array inside `appPackage/ai-plugin.json`: it mirrors the relevant fields of the server's `tools/list` response, including each tool's `_meta["openai/outputTemplate"]` that links it to a UI widget. Copilot reads the tool descriptions from the app package (not from the live server), so **if you change the tools on the server you must regenerate this array** — either use the **ATK: Update Action with MCP** CodeLens in `.vscode/mcp.json`, or dump the server's `tools/list` result into it manually. If the tool descriptions are missing or stale, tool calls still work but the widgets won't render. The tools are kept inline (rather than in a separate file referenced via `mcp_tool_description.file`) so that app packaging always includes them.
 
 ### Debug locally with F5
 
@@ -98,7 +98,7 @@ This sample illustrates the following concepts:
 
 * Extending a declarative agent with an MCP server action using the `RemoteMCPServer` runtime in `ai-plugin.json`
 * Serving **MCP Apps UI widgets** from MCP resources: `ui://widget/office-map.html` and `ui://widget/my-bookings.html` registered with the `text/html+skybridge` MIME type and a locked-down `openai/widgetCSP`
-* Linking tools to widgets with the `openai/outputTemplate` tool metadata field, and returning `structuredContent` for the widget to render
+* Linking tools to widgets with the `openai/outputTemplate` tool metadata field, and returning `structuredContent` for the widget to render; tools that widgets invoke via `callTool` are additionally marked app-visible (`openai/widgetAccessible` / `ui.visibility` metadata), without which the host blocks widget-initiated calls
 * Bi-directional widget interactivity: the seat map books desks with `window.openai.callTool` and notifies the agent with `window.openai.sendFollowUpMessage`; the bookings list cancels bookings in place
 * Host integration done right: feature detection for every `window.openai` API, light/dark theme support, intrinsic height notifications, and an optional full-screen mode
 * Self-contained widget HTML (no external scripts, styles, or fonts) that satisfies the widget sandbox's content security policy
