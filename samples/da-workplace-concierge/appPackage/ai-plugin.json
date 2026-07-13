@@ -68,6 +68,14 @@
       }
     },
     {
+      "name": "get_week_occupancy",
+      "description": "Shows how busy the office is over the next five days, with booked-desk counts per floor.",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
       "name": "who_is_in_office",
       "description": "Lists colleagues with a desk booked on a given date.",
       "parameters": {
@@ -211,6 +219,22 @@
               }
             },
             {
+              "name": "get_week_occupancy",
+              "title": "Get office occupancy outlook",
+              "description": "Shows how busy the office is over the next five days, with booked-desk counts per floor.",
+              "inputSchema": {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {}
+              },
+              "annotations": {
+                "readOnlyHint": true
+              },
+              "_meta": {
+                "openai/outputTemplate": "ui://widget/occupancy.html"
+              }
+            },
+            {
               "name": "who_is_in_office",
               "title": "Who is in the office",
               "description": "Lists colleagues with a desk booked on a given date.",
@@ -238,6 +262,7 @@
         "book_desk",
         "get_my_bookings",
         "cancel_booking",
+        "get_week_occupancy",
         "who_is_in_office"
       ]
     }

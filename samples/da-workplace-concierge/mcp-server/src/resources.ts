@@ -39,6 +39,12 @@ const widgets: WidgetDefinition[] = [
     title: "My bookings widget",
     file: "my-bookings.html",
   },
+  {
+    name: "occupancy-widget",
+    uri: "ui://widget/occupancy.html",
+    title: "Office occupancy widget",
+    file: "occupancy.html",
+  },
 ].map((widget) => ({
   ...widget,
   html: readFileSync(join(widgetsDir, widget.file), "utf8"),

@@ -31,6 +31,7 @@
     <select id="widget-select">
       <option value="office-map">Office map</option>
       <option value="my-bookings">My bookings</option>
+      <option value="occupancy">Occupancy outlook</option>
     </select>
   </label>
   <label>Theme:
@@ -59,6 +60,7 @@
   var WIDGETS = {
     "office-map": { uri: "ui://widget/office-map.html", seedTool: "get_office_map", seedArgs: {} },
     "my-bookings": { uri: "ui://widget/my-bookings.html", seedTool: "get_my_bookings", seedArgs: {} },
+    "occupancy": { uri: "ui://widget/occupancy.html", seedTool: "get_week_occupancy", seedArgs: {} },
   };
 
   function log(kind, detail) {

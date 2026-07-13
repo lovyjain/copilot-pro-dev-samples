@@ -329,3 +329,41 @@ export function whoIsInOffice(date: string): { date: string; count: number; atte
 export function getUserName(userId: string): string {
   return employeeName(userId);
 }
+
+export interface DayOccupancy {
+  date: string;
+  dayName: string;
+  byFloor: Array<{ floor: number; booked: number; capacity: number }>;
+  booked: number;
+  capacity: number;
+}
+
+const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+export function getWeekOccupancy(): { startDate: string; days: DayOccupancy[] } {
+  const floors = [1, 2];
+  const capacityPerFloor = desks.length / floors.length;
+  const days: DayOccupancy[] = [];
+  for (let offset = 0; offset < 5; offset++) {
+    const date = isoDate(offset);
+    const weekday = new Date(`${date}T12:00:00`).getDay();
+    const byFloor = floors.map((floor) => ({
+      floor,
+      booked: bookings.filter((b) => {
+        if (b.type !== "desk" || b.date !== date) {
+          return false;
+        }
+        return deskById(b.resourceId)?.floor === floor;
+      }).length,
+      capacity: capacityPerFloor,
+    }));
+    days.push({
+      date,
+      dayName: DAY_NAMES[weekday],
+      byFloor,
+      booked: byFloor.reduce((sum, f) => sum + f.booked, 0),
+      capacity: desks.length,
+    });
+  }
+  return { startDate: days[0].date, days };
+}

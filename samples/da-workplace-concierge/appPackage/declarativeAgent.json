@@ -20,6 +20,10 @@
     {
       "title": "Second floor",
       "text": "Show me the seat map for floor 2"
+    },
+    {
+      "title": "Busy days",
+      "text": "How busy is the office over the next few days?"
     }
   ],
   "actions": [

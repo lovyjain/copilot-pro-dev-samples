@@ -4,7 +4,7 @@
 
 Workplace Concierge is a declarative agent for Microsoft 365 Copilot that helps employees plan their days in the office: find and book a desk, check meeting room availability, see who is coming in, and manage bookings.
 
-What makes this sample different is *how* the agent answers. Its action is a remote MCP (Model Context Protocol) server that ships **MCP Apps interactive UI widgets**: instead of describing desk availability in text, Copilot renders a clickable office seat map inline in the chat. Users book a desk by selecting it on the map, and cancel bookings from an interactive list — the widgets call MCP tools directly from the UI, and the seat map hands control back to the agent with a follow-up message.
+What makes this sample different is *how* the agent answers. Its action is a remote MCP (Model Context Protocol) server that ships **MCP Apps interactive UI widgets**: instead of describing desk availability in text, Copilot renders a clickable office seat map inline in the chat. Users book a desk by selecting it on the map, cancel bookings from an interactive list, and check how busy the office is on an occupancy chart — the widgets call MCP tools directly from the UI, and hand control back to the agent with follow-up messages where it makes sense.
 
 ![The office map widget rendered in Copilot](./assets/office-map-widget.png)
 
@@ -100,6 +100,7 @@ This sample illustrates the following concepts:
 * Serving **MCP Apps UI widgets** from MCP resources: `ui://widget/office-map.html` and `ui://widget/my-bookings.html` registered with the `text/html+skybridge` MIME type and a locked-down `openai/widgetCSP`
 * Linking tools to widgets with the `openai/outputTemplate` tool metadata field, and returning `structuredContent` for the widget to render; tools that widgets invoke via `callTool` are additionally marked app-visible (`openai/widgetAccessible` / `ui.visibility` metadata), without which the host blocks widget-initiated calls
 * Bi-directional widget interactivity: the seat map books desks with `window.openai.callTool` and notifies the agent with `window.openai.sendFollowUpMessage`; the bookings list cancels bookings in place
+* Three widget interaction patterns side by side: full tool-calling loop (seat map), in-place actions (bookings list), and the minimal display-only widget whose only interactivity is handing back to the agent with a follow-up message (occupancy outlook)
 * Host integration done right: feature detection for every `window.openai` API, light/dark theme support, intrinsic height notifications, and an optional full-screen mode
 * Self-contained widget HTML (no external scripts, styles, or fonts) that satisfies the widget sandbox's content security policy
 * A stateless Streamable HTTP MCP server in TypeScript with tools defined via the official MCP SDK

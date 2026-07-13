@@ -7,12 +7,14 @@ import {
   getBookings,
   getOfficeMap,
   getUserName,
+  getWeekOccupancy,
   todayIso,
   whoIsInOffice,
 } from "./data.js";
 
 const OFFICE_MAP_WIDGET_URI = "ui://widget/office-map.html";
 const MY_BOOKINGS_WIDGET_URI = "ui://widget/my-bookings.html";
+const OCCUPANCY_WIDGET_URI = "ui://widget/occupancy.html";
 
 // Tools the widgets invoke through window.openai.callTool must be visible to
 // the app (widget) as well as the model, or the host won't execute
@@ -131,6 +133,33 @@ export function registerTools(server: McpServer): void {
       return {
         content: [{ type: "text", text: result.message }],
         structuredContent: payload as unknown as Record<string, unknown>,
+      };
+    }
+  );
+
+  server.registerTool(
+    "get_week_occupancy",
+    {
+      title: "Get office occupancy outlook",
+      description:
+        "Shows how busy the office is over the next five days, with booked-desk counts per floor.",
+      inputSchema: {},
+      annotations: { readOnlyHint: true },
+      // Display-only widget: it never calls tools itself (clicking a day sends
+      // a follow-up message instead), so no app-visibility metadata is needed.
+      _meta: { "openai/outputTemplate": OCCUPANCY_WIDGET_URI },
+    },
+    async () => {
+      const outlook = getWeekOccupancy();
+      const busiest = outlook.days.reduce((max, d) => (d.booked > max.booked ? d : max), outlook.days[0]);
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Occupancy for the next 5 days starting ${outlook.startDate}: busiest day is ${busiest.dayName} ${busiest.date} with ${busiest.booked} of ${busiest.capacity} desks booked. The widget shows the day-by-day breakdown per floor.`,
+          },
+        ],
+        structuredContent: outlook as unknown as Record<string, unknown>,
       };
     }
   );
